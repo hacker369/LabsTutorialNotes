@@ -6,6 +6,9 @@ Web 安全**经典靶场通关笔记**（自用 + 分享）：sqli-labs、xss-la
 > 本文档仅供在**本地或已授权**的教学靶场中学习使用。笔记中的手法针对故意存在漏洞的练习环境。  
 > **请勿**对未授权的真实系统进行测试或攻击。作者不对任何滥用行为负责。
 
+**在线阅读（静态站）：** [https://hacker369.github.io/LabsTutorialNotes.github.io/](https://hacker369.github.io/LabsTutorialNotes.github.io/)  
+站点仓库：[LabsTutorialNotes.github.io](https://github.com/hacker369/LabsTutorialNotes.github.io)
+
 ---
 
 ## 目录导航
