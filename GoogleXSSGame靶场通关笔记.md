@@ -422,5 +422,3 @@ https://xss-game.appspot.com/level6/frame#//www.google.com/jsapi?callback=alert
 ***
 
 
-> 更新: 2026-09-19 18:46:32  
-> 原文: <https://www.yuque.com/bmxq7n/mbc3yh9aprgoknpp>
