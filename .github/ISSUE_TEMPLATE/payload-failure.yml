@@ -1,0 +1,55 @@
+name: "🎯 Payload 失效反馈"
+description: 某一关的 payload 在你的环境不生效、报错或表现与笔记描述不同
+labels: ["payload-failure"]
+body:
+  - type: dropdown
+    id: lab
+    attributes:
+      label: 靶场
+      options:
+        - sqli-labs
+        - xss-labs
+        - upload-labs
+        - Google XSS Game
+    validations:
+      required: true
+
+  - type: input
+    id: level
+    attributes:
+      label: 关卡编号
+      description: 例如 Less-5 / level3.php / 第 7 关
+      placeholder: Less-27
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境信息
+      description: PHP / MySQL 版本、部署方式（Docker / phpStudy / XAMPP）、浏览器及版本
+      placeholder: "PHP 8.2 + MySQL 8.0，Docker 部署，Chrome 121"
+    validations:
+      required: true
+
+  - type: textarea
+    id: payload
+    attributes:
+      label: 使用的 Payload / 输入内容
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际现象 vs 笔记描述的差异
+      description: 报错信息、页面回显、拦截提示等，越具体越容易定位
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 截图 / 补充信息
+      description: 可直接粘贴截图，或附上源码片段（注意脱敏）

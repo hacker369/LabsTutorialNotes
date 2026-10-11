@@ -1,0 +1,52 @@
+name: 图片批量压缩
+
+on:
+  workflow_dispatch:
+    inputs:
+      quality:
+        description: "pngquant 质量区间（越低越小，建议 65-85）"
+        required: false
+        default: "65-85"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compress
+  cancel-in-progress: false
+
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 pngquant
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq pngquant
+
+      - name: 压缩 img/ 下所有 PNG（文件名不变，md 无需改动）
+        run: |
+          find img -type f -name '*.png' -print0 \
+            | xargs -0 -P 4 -I{} sh -c \
+              'pngquant --quality=${{ github.event.inputs.quality || "65-85" }} --speed 1 --ext .png --force "{}" || true'
+          echo "压缩完成。pngquant 跳过的文件（质量已达标或压缩后更大）保持原样。"
+
+      - name: 汇报压缩收益
+        run: |
+          TOTAL=$(find img -type f -name '*.png' | wc -l)
+          echo "当前 PNG 共 $TOTAL 张。"
+          git status --porcelain img | head -20 || true
+          CHANGED=$(git status --porcelain img | wc -l)
+          echo "本次实际改动 $CHANGED 个文件。"
+
+      - name: 提交变更（若有）
+        run: |
+          if [ -n "$(git status --porcelain img)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add img
+            git commit -m "chore: batch compress PNG screenshots (pngquant)"
+            git push
+          else
+            echo "所有图片已达标，无需提交。"
+          fi

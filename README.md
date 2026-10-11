@@ -1,5 +1,11 @@
 # LabsTutorialNotes
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Pages Deploy](https://github.com/hacker369/LabsTutorialNotes/actions/workflows/pages.yml/badge.svg)](https://github.com/hacker369/LabsTutorialNotes/actions/workflows/pages.yml)
+[![Repo Health Check](https://github.com/hacker369/LabsTutorialNotes/actions/workflows/ci.yml/badge.svg)](https://github.com/hacker369/LabsTutorialNotes/actions/workflows/ci.yml)
+![Docsify](https://img.shields.io/badge/docs-Docsify-4f46e5)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+
 Web 安全**经典靶场通关笔记**（自用 + 分享）：sqli-labs、xss-labs、upload-labs、Google XSS Game。
 
 > **免责声明**  
@@ -73,7 +79,13 @@ npx docsify-cli serve .
 LabsTutorialNotes/
 ├── index.html              # Docsify 入口
 ├── home.md / _sidebar.md   # 站点首页与侧栏
-├── .github/workflows/pages.yml
+├── .github/
+│   ├── workflows/
+│   │   ├── pages.yml           # GitHub Pages 部署
+│   │   ├── ci.yml              # 仓库健康检查（图片引用/体积/外链）
+│   │   └── compress-images.yml # 手动触发的 PNG 批量压缩
+│   └── ISSUE_TEMPLATE/         # Issue 模板（payload 失效反馈等）
+├── scripts/check_images.py # 图片健康检查（CI 与本地通用）
 ├── README.md
 ├── LICENSE
 ├── docs/MAINTENANCE.md
@@ -83,10 +95,18 @@ LabsTutorialNotes/
 
 ---
 
+## 图片贡献须知（CI 强制）
+
+- 新增截图必须放入 `img/` 并**在 md 中引用**，不允许孤儿图
+- 单张不超过 **512KB**（建议先 `pngquant --quality=65-85` 压缩）
+- 本地可随时自检：`python3 scripts/check_images.py`
+
+---
+
 ## 如何贡献 / 纠错
 
-- 发现 payload 失效、环境差异或笔误：欢迎开 Issue  
-- 直接 PR 小修改也欢迎（请尽量保持现有章节风格）
+- 发现 payload 失效、环境差异或笔误：欢迎用 [Issue 模板](https://github.com/hacker369/LabsTutorialNotes/issues/new/choose) 反馈  
+- 直接 PR 小修改也欢迎，贡献流程与体例要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 维护与图片体积说明见 [docs/MAINTENANCE.md](./docs/MAINTENANCE.md)。
 

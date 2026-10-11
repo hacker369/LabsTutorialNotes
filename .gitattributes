@@ -1,8 +1,14 @@
-# Prepare Git LFS for lab screenshots (run: git lfs install)
-# After enabling LFS, large binaries under img/ can be tracked as pointers.
+# 通用文本文件按平台默认处理，仓库内统一存 LF
+* text=auto
 
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-*.gif filter=lfs diff=lfs merge=lfs -text
-*.webp filter=lfs diff=lfs merge=lfs -text
+# 图片一律二进制处理，禁止换行符改写与 diff
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+
+# 注：此前版本曾放置 Git LFS 规则草案，但从未实际启用；
+# 经评估（GitHub Pages 站点 + 免费带宽额度），本仓库不使用 LFS，
+# 图片治理策略改为：入库前压缩（pngquant / WebP）+ CI 体积检查。

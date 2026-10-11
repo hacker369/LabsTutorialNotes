@@ -1,0 +1,66 @@
+name: CI · 仓库健康检查
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  images:
+    name: 图片引用与体积检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 计算对比基准（PR 用目标分支，push 用上一提交）
+        id: base
+        run: |
+          BASE=""
+          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          elif [ -n "${{ github.event.before }}" ] && git cat-file -e "${{ github.event.before }}" 2>/dev/null; then
+            BASE="${{ github.event.before }}"
+          elif git cat-file -e "HEAD~1" 2>/dev/null; then
+            BASE="HEAD~1"
+          else
+            BASE="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+          fi
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+
+      - name: 检查新增图片（未引用 / 超过 512KB 则失败）
+        run: python3 scripts/check_images.py --ci "${{ steps.base.outputs.base }}"
+
+      - name: 全量体检报告（不阻塞，写入 Job Summary）
+        if: always()
+        run: python3 scripts/check_images.py --summary
+
+  links:
+    name: 外链有效性巡检（仅报告）
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: 检查 md 中的外链
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress --max-retries 2 --timeout 20s
+            --exclude '127\.0\.0\.1|localhost'
+            '**/*.md'
+          fail: false
+          format: markdown
+          output: /tmp/lychee-report.md
+      - name: 写入 Job Summary
+        if: always()
+        run: |
+          [ -f /tmp/lychee-report.md ] && cat /tmp/lychee-report.md >> "$GITHUB_STEP_SUMMARY" || true

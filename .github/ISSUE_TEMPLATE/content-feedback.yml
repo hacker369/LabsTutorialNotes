@@ -1,0 +1,41 @@
+name: "📝 内容纠错 / 改进建议"
+description: 笔误、格式问题、原理解释有误、有更优解法、或希望补充新靶场笔记
+labels: ["content-fix"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 类型
+      options:
+        - 笔误 / 格式问题
+        - 原理解释有误或不清晰
+        - 有更优 / 其他解法可以补充
+        - 希望新增某靶场的通关笔记
+        - 其他
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: 涉及位置
+      description: 笔记文件名 + 章节/关卡，例如「sqli-labs 靶场通关笔记.md · Less-23 过滤绕过」
+      placeholder: sqli-labs 靶场通关笔记.md · Less-23
+    validations:
+      required: true
+
+  - type: textarea
+    id: detail
+    attributes:
+      label: 具体内容
+      description: 现在写的是什么、应该是什么、理由或出处
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 确认
+      options:
+        - label: 我确认本反馈针对本地/授权靶场环境，不涉及未授权测试内容
+          required: true

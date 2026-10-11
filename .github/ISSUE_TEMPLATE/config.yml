@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 在线阅读站
+    url: https://hacker369.github.io/LabsTutorialNotes/
+    about: 提问前请先确认在线版本是否已包含最新修复
+  - name: 💬 相关仓库 · Vulhub 组件漏洞复现笔记
+    url: https://github.com/hacker369/VulhubTutorialNotes.github.io
+    about: 组件漏洞 / Vulhub 相关问题请移步该仓库
