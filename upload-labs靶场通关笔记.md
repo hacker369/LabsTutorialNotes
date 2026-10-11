@@ -2792,5 +2792,3 @@ docker rmi c0ny1/upload-labs
 > 本文描述的是公开教学靶场中的已知漏洞模式，用于合法安全研究与防御建设。实战中仅可在明确授权下进行测试。
 
 
-> 更新: 2026-08-28 09:31:55  
-> 原文: <https://www.yuque.com/bmxq7n/cyf6dbmn7ou2brw4>
