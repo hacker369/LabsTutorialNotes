@@ -6,8 +6,8 @@ Web 安全**经典靶场通关笔记**（自用 + 分享）：sqli-labs、xss-la
 > 本文档仅供在**本地或已授权**的教学靶场中学习使用。笔记中的手法针对故意存在漏洞的练习环境。  
 > **请勿**对未授权的真实系统进行测试或攻击。作者不对任何滥用行为负责。
 
-**在线阅读（静态站）：** [https://hacker369.github.io/LabsTutorialNotes.github.io/](https://hacker369.github.io/LabsTutorialNotes.github.io/)  
-站点仓库：[LabsTutorialNotes.github.io](https://github.com/hacker369/LabsTutorialNotes.github.io)
+**在线阅读：** [https://hacker369.github.io/LabsTutorialNotes/](https://hacker369.github.io/LabsTutorialNotes/)  
+（本仓库 GitHub Pages + Docsify，笔记与截图无需再同步到其他仓库。）
 
 ---
 
@@ -33,13 +33,6 @@ Web 安全**经典靶场通关笔记**（自用 + 分享）：sqli-labs、xss-la
 4. **Google XSS Game**：巩固浏览器侧 XSS  
 5. 再进入 Vulhub 等真实组件漏洞环境
 
-每篇笔记大致结构：
-
-1. 概述与环境安装  
-2. 重要概念 / 参数说明  
-3. 分关（或分题）payload + 原理 + 截图  
-4. 小结
-
 ---
 
 ## 环境建议
@@ -54,20 +47,38 @@ Web 安全**经典靶场通关笔记**（自用 + 分享）：sqli-labs、xss-la
 
 ---
 
+## 静态站 / GitHub Pages
+
+本仓库根目录已包含 Docsify 站点文件（`index.html`、`home.md`、`_sidebar.md` 等）。
+
+### 开启 Pages（只需一次）
+
+1. 打开 [Settings → Pages](https://github.com/hacker369/LabsTutorialNotes/settings/pages)
+2. **Source** 选 **GitHub Actions**（推荐，已提供 `.github/workflows/pages.yml`）  
+   或选 **Deploy from a branch** → `main` / `/ (root)`
+3. 若用 Actions：到 [Actions](https://github.com/hacker369/LabsTutorialNotes/actions) 确认 **Deploy GitHub Pages** 成功；失败时检查 **Settings → Actions → General → Workflow permissions** 是否为 Read and write
+4. 访问：**https://hacker369.github.io/LabsTutorialNotes/**
+
+本地预览：
+
+```bash
+npx docsify-cli serve .
+```
+
+---
+
 ## 仓库结构
 
 ```text
 LabsTutorialNotes/
+├── index.html              # Docsify 入口
+├── home.md / _sidebar.md   # 站点首页与侧栏
+├── .github/workflows/pages.yml
 ├── README.md
 ├── LICENSE
-├── .gitattributes
-├── docs/
-│   └── MAINTENANCE.md          # 维护与图片优化说明
-├── sqli-labs靶场通关笔记.md
-├── xss-labs靶场通关笔记.md
-├── upload-labs靶场通关笔记.md
-├── GoogleXSSGame靶场通关笔记.md
-└── img/                        # 笔记截图（语雀导出目录结构）
+├── docs/MAINTENANCE.md
+├── *靶场通关笔记.md
+└── img/
 ```
 
 ---
@@ -77,7 +88,7 @@ LabsTutorialNotes/
 - 发现 payload 失效、环境差异或笔误：欢迎开 Issue  
 - 直接 PR 小修改也欢迎（请尽量保持现有章节风格）
 
-维护与体积优化说明见 [docs/MAINTENANCE.md](./docs/MAINTENANCE.md)。
+维护与图片体积说明见 [docs/MAINTENANCE.md](./docs/MAINTENANCE.md)。
 
 ---
 
