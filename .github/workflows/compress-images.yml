@@ -19,34 +19,61 @@ jobs:
   compress:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: 安装 pngquant
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq pngquant
-
-      - name: 压缩 img/ 下所有 PNG（文件名不变，md 无需改动）
         run: |
+          set -e
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pngquant
+          echo "pngquant 版本：$(pngquant --version)"
+
+      - name: 压缩前统计
+        id: before
+        run: |
+          echo "count=$(find img -type f -name '*.png' | wc -l)" >> "$GITHUB_OUTPUT"
+          echo "size=$(du -sb img | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: 压缩所有 PNG（文件名不变，md 无需改动）
+        run: |
+          set +e
           find img -type f -name '*.png' -print0 \
             | xargs -0 -P 4 -I{} sh -c \
-              'pngquant --quality=${{ github.event.inputs.quality || "65-85" }} --speed 1 --ext .png --force "{}" || true'
-          echo "压缩完成。pngquant 跳过的文件（质量已达标或压缩后更大）保持原样。"
+              'pngquant --quality=${{ github.event.inputs.quality || '"'"'65-85'"'"' }} --speed 1 --ext .png --force "{}" 2>&1 | grep -v " must be smaller than " || true'
+          echo "压缩命令执行完毕。个别图片质量已达标会自动跳过，属正常现象。"
+
+      - name: 压缩后统计
+        id: after
+        run: |
+          echo "count=$(find img -type f -name '*.png' | wc -l)" >> "$GITHUB_OUTPUT"
+          echo "size=$(du -sb img | cut -f1)" >> "$GITHUB_OUTPUT"
+          echo "changed=$(git status --porcelain img | wc -l)" >> "$GITHUB_OUTPUT"
 
       - name: 汇报压缩收益
         run: |
-          TOTAL=$(find img -type f -name '*.png' | wc -l)
-          echo "当前 PNG 共 $TOTAL 张。"
-          git status --porcelain img | head -20 || true
-          CHANGED=$(git status --porcelain img | wc -l)
-          echo "本次实际改动 $CHANGED 个文件。"
+          BEFORE=${{ steps.before.outputs.size }}
+          AFTER=${{ steps.after.outputs.size }}
+          CHANGED=${{ steps.after.outputs.changed }}
+          awk -v b="$BEFORE" -v a="$AFTER" -v c="$CHANGED" \
+            'BEGIN{printf "压缩前 %.1f MB → 压缩后 %.1f MB（减少 %.1f MB），改动 %s 个文件\n", b/1048576, a/1048576, (b-a)/1048576, c}'
 
-      - name: 提交变更（若有）
+      - name: 提交并推送（若有变更）
         run: |
-          if [ -n "$(git status --porcelain img)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add img
-            git commit -m "chore: batch compress PNG screenshots (pngquant)"
-            git push
+          if [ "$(git status --porcelain img | wc -l)" -eq 0 ]; then
+            echo "所有图片已达标，无变更，跳过提交。"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add img
+          git commit -m "chore: batch compress PNG screenshots (pngquant)" \
+                     -m "${{ steps.before.outputs.size }} -> ${{ steps.after.outputs.size }} bytes"
+          if git push origin "HEAD:${GITHUB_REF_NAME:-main}"; then
+            echo "推送成功。"
           else
-            echo "所有图片已达标，无需提交。"
+            echo "::error::git push 失败。请检查仓库 Settings → Actions → General → Workflow permissions 是否为 Read and write，以及 main 分支是否有保护规则。"
+            exit 1
           fi

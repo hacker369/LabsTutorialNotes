@@ -1,61 +1,710 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <title>LabsTutorialNotes · 靶场通关笔记</title>
-  <meta name="description" content="sqli-labs / xss-labs / upload-labs / Google XSS Game 通关笔记" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LabsTutorialNotes · Web 安全靶场通关笔记</title>
+  <meta name="description" content="sqli-labs / xss-labs / upload-labs / Google XSS Game 全关卡通关实录：120+ 关卡、700+ payload、1000+ 实操截图">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <script>
+    /* 防闪烁：渲染前恢复用户上次选择的主题（默认暗色） */
+    try { if (localStorage.getItem('ltn-theme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
+  </script>
   <style>
-    :root { --theme-color: #4f46e5; }
-    .disclaimer {
-      border-left: 4px solid #f59e0b;
-      background: #fffbeb;
-      padding: 0.75rem 1rem;
-      margin: 1rem 0;
+    /* ============================================================
+       LabsTutorialNotes · 终端风双主题（默认暗色 / 可切浅色）
+       ============================================================ */
+    :root {
+      --bg:        #0a0e14;
+      --bg-panel:  #0d1117;
+      --bg-elev:   #161b22;
+      --border:    #1f2735;
+      --text:      #c9d1d9;
+      --text-dim:  #8b949e;
+      --heading:   #f0f6fc;
+      --accent:    #3fff8c;
+      --accent-dk: rgba(63,255,140,.12);
+      --accent-glow: rgba(63,255,140,.55);
+      --cyan:      #00e5ff;
+      --code-bg:   #070a0f;
+      --code-text: #d5dbe5;
+      --grid-line: rgba(63,255,140,.025);
+      --dim-tag:   #3d4657;
+      --nav-bg:    rgba(10,14,20,.82);
+      --sidebar-bg: rgba(13,17,23,.94);
+      --muted:     #556070;
+      --home-dim:  #77808f;
+      --warn-bg:   rgba(255,189,46,.06);
+      --warn-border: rgba(255,189,46,.35);
+      --warn-text: #e8c268;
+      --shadow-card: rgba(0,0,0,.4);
+      --hover-bg:  rgba(63,255,140,.05);
+      --scrollbar: #242d3d;
+      --scrollbar-h: #33405a;
+      /* 语法高亮（one-dark 系） */
+      --tk-comment: #5f6b7f;
+      --tk-keyword: #ff7edb;
+      --tk-string:  #a5e844;
+      --tk-number:  #ffab70;
+      --tk-func:    #56d4dd;
+      --tk-tag:     #ff7edb;
+      --tk-attr:    #ffbd2e;
+      --tk-punct:   #8b949e;
+      --tk-var:     #e6edf3;
+      --tk-regex:   #ffa657;
+      --mono: 'JetBrains Mono','Cascadia Code','Fira Code',ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
+      --sans: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+      --sidebar-w: 272px;
     }
-    /* payload 复制按钮样式微调 */
-    .docsify-copy-code-button { border-radius: 4px; }
+    html[data-theme="light"] {
+      --bg:        #f6f8fa;
+      --bg-panel:  #ffffff;
+      --bg-elev:   #eef1f5;
+      --border:    #d8dee6;
+      --text:      #24292f;
+      --text-dim:  #57606a;
+      --heading:   #1a1f24;
+      --accent:    #0a8f4d;
+      --accent-dk: rgba(10,143,77,.08);
+      --accent-glow: rgba(10,143,77,.4);
+      --cyan:      #0969da;
+      --code-bg:   #0d1117;
+      --code-text: #d5dbe5;
+      --grid-line: rgba(20,30,40,.035);
+      --dim-tag:   #98a2b0;
+      --nav-bg:    rgba(255,255,255,.86);
+      --sidebar-bg: rgba(255,255,255,.96);
+      --muted:     #8a93a0;
+      --home-dim:  #6a7380;
+      --warn-bg:   rgba(255,189,46,.12);
+      --warn-border: rgba(214,158,46,.45);
+      --warn-text: #7a5b10;
+      --shadow-card: rgba(140,150,165,.25);
+      --hover-bg:  rgba(10,143,77,.06);
+      --scrollbar: #c9d1d9;
+      --scrollbar-h: #a8b3c1;
+      /* 语法高亮（github 系，浅色代码底仍用深底块所以保留可读配色） */
+      --tk-comment: #7b8794;
+      --tk-keyword: #ff9ecb;
+      --tk-string:  #b3e67a;
+      --tk-number:  #ffc08a;
+      --tk-func:    #6fe0ea;
+      --tk-tag:     #ff9ecb;
+      --tk-attr:    #ffd580;
+      --tk-punct:   #a8b3c1;
+      --tk-var:     #e6edf3;
+      --tk-regex:   #ffc08a;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--text);
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 32px 32px;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .2s ease, color .2s ease;
+    }
+
+    ::selection { background: var(--accent); color: #04140b; }
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-h); }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    a { color: var(--accent); text-decoration: none; transition: all .15s ease; }
+    a:hover { color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); }
+
+    /* ---------- 顶栏导航 ---------- */
+    .app-nav {
+      position: fixed; top: 0; right: 0; left: 0;
+      display: flex; justify-content: flex-end; align-items: center;
+      padding: 0 28px; height: 56px; margin: 0; z-index: 60;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      transition: background .2s ease;
+    }
+    .app-nav > p { margin: 0; }
+    .app-nav ul { list-style: none; margin: 0; display: flex; align-items: center; }
+    .app-nav li { list-style: none; margin: 0; }
+    .app-nav a {
+      margin: 0 10px; padding: 6px 4px; color: var(--text-dim);
+      font-size: 14px; font-weight: 500;
+    }
+    .app-nav a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+    .app-nav a::before { content: '> '; color: var(--accent); font-family: var(--mono); font-size: 12px; opacity: 0; transition: opacity .15s; }
+    .app-nav a:hover::before { opacity: 1; }
+
+    /* 顶栏右侧控件（主题 / 语言） */
+    #ui-controls { display: flex; align-items: center; margin-left: 14px; }
+    #ui-controls button {
+      width: 34px; height: 30px; margin-left: 8px;
+      background: var(--bg-elev); color: var(--text);
+      border: 1px solid var(--border); border-radius: 7px;
+      font-size: 12.5px; font-family: var(--mono); cursor: pointer;
+      transition: all .15s;
+    }
+    #ui-controls button:hover {
+      border-color: var(--accent); color: var(--accent);
+      box-shadow: 0 0 10px var(--accent-dk);
+    }
+
+    /* ---------- 侧栏 ---------- */
+    .sidebar {
+      position: fixed; top: 0; bottom: 0; left: 0;
+      width: var(--sidebar-w); padding: 0; z-index: 50;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      transition: transform .25s ease, background .2s ease;
+    }
+    .sidebar::before {
+      content: '$ whoami > labs-tutorial-notes_';
+      display: block; margin: 18px 20px 2px;
+      font-family: var(--mono); font-size: 12px; color: var(--accent);
+      opacity: .85; white-space: nowrap; overflow: hidden;
+    }
+    .search { margin: 12px 20px 4px; }
+    .search input {
+      width: 100%; padding: 9px 12px;
+      background: var(--bg-elev); color: var(--text);
+      border: 1px solid var(--border); border-radius: 6px;
+      font-size: 13px; outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dk);
+    }
+    .search input::placeholder { color: var(--muted); }
+    .search .results-panel { background: transparent; }
+    .search h2 { font-size: 12px; color: var(--text-dim); margin: 12px 0 4px; }
+    .search .matching-line { color: var(--text-dim); }
+    .search .clear-button {
+      cursor: pointer; color: var(--accent);
+      background: var(--accent-dk); border: 1px solid transparent; border-radius: 4px;
+    }
+
+    .sidebar-nav { padding: 8px 12px 40px; }
+    .sidebar-nav ul { margin: 0; padding: 0; list-style: none; }
+    .sidebar-nav ul ul { padding-left: 14px; }
+    .sidebar-nav li { margin: 2px 0; }
+    .sidebar-nav a {
+      display: block; padding: 6px 10px; border-radius: 6px;
+      color: var(--text-dim); font-size: 14px; line-height: 1.5;
+      border-left: 2px solid transparent;
+    }
+    .sidebar-nav > ul > li > a {
+      color: var(--text); font-weight: 600; font-size: 13px;
+      letter-spacing: .5px; margin-top: 8px;
+    }
+    .sidebar-nav > ul > li > a::before {
+      content: '// '; color: var(--accent); font-family: var(--mono); font-weight: 400;
+    }
+    .sidebar-nav ul ul a { font-size: 13.5px; font-weight: 400; }
+    .sidebar-nav a:hover {
+      color: var(--accent); background: var(--hover-bg); text-shadow: none;
+    }
+    .sidebar-nav a.active {
+      color: var(--accent);
+      background: var(--accent-dk);
+      border-left-color: var(--accent);
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+    .sidebar-nav .app-sub-sidebar a { font-size: 12.5px; color: var(--muted); }
+
+    /* ---------- 侧栏收起按钮 ---------- */
+    .sidebar-toggle {
+      position: fixed; left: calc(var(--sidebar-w) - 30px); bottom: 0;
+      width: 44px; height: 44px; z-index: 55;
+      background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px 0 0 0;
+      cursor: pointer; transition: left .25s ease, background .15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sidebar-toggle:hover { background: var(--bg-elev); }
+    .sidebar-toggle span { display: none; }
+    .sidebar-toggle::before { content: '☰'; color: var(--text-dim); font-size: 15px; }
+    body.close .sidebar-toggle { left: 0; }
+    body.close .sidebar { transform: translateX(-100%); }
+    body.close .content { left: 0; }
+
+    /* ---------- 主内容区 ---------- */
+    .content {
+      position: absolute; top: 0; right: 0; bottom: 0; left: var(--sidebar-w);
+      overflow-y: auto;
+      transition: left .25s ease;
+    }
+    .markdown-section {
+      max-width: 860px; margin: 0 auto; padding: 88px 44px 120px;
+      font-size: 15.5px; line-height: 1.85;
+    }
+
+    /* 标题体系 */
+    .markdown-section h1 {
+      font-size: 34px; font-weight: 700; color: var(--heading);
+      margin: 0 0 8px; padding-bottom: 14px; line-height: 1.3;
+      border-bottom: 2px solid transparent;
+      border-image: linear-gradient(90deg, var(--accent), transparent) 1;
+    }
+    .markdown-section h1::before { content: '# '; color: var(--accent); opacity: .6; font-weight: 400; }
+    .markdown-section h2 {
+      font-size: 23px; font-weight: 650; color: var(--heading);
+      margin: 46px 0 16px; padding-left: 14px; position: relative;
+    }
+    .markdown-section h2::before {
+      content: ''; position: absolute; left: 0; top: 6px; bottom: 6px;
+      width: 3px; border-radius: 2px;
+      background: var(--accent); box-shadow: 0 0 8px var(--accent-glow);
+    }
+    .markdown-section h2::after {
+      content: '##'; position: absolute; right: 0; top: 8px;
+      color: var(--accent); font-family: var(--mono); font-size: 13px; opacity: .25; font-weight: 400;
+    }
+    .markdown-section h3 { font-size: 18.5px; color: var(--heading); margin: 32px 0 12px; }
+    .markdown-section h3::before { content: '▸ '; color: var(--cyan); }
+    .markdown-section h4 { color: var(--text); margin: 24px 0 10px; }
+    .markdown-section p { margin: 12px 0; }
+    .markdown-section strong { color: var(--heading); font-weight: 650; }
+
+    /* ---------- 行内代码 ---------- */
+    .markdown-section code:not([class^="lang-"]),
+    .markdown-section p code, .markdown-section li code, .markdown-section td code, .markdown-section h3 code, .markdown-section h4 code {
+      font-family: var(--mono); font-size: .88em;
+      padding: 2px 7px; border-radius: 5px;
+      color: var(--accent);
+      background: var(--accent-dk);
+      border: 1px solid var(--accent-dk);
+    }
+    html[data-theme="light"] .markdown-section code:not([class^="lang-"]),
+    html[data-theme="light"] .markdown-section p code,
+    html[data-theme="light"] .markdown-section li code,
+    html[data-theme="light"] .markdown-section td code {
+      border: 1px solid rgba(10,143,77,.22);
+    }
+
+    /* ---------- 代码块（终端风） ---------- */
+    .markdown-section pre {
+      position: relative;
+      background: var(--code-bg) !important;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 34px 18px 16px !important;
+      margin: 18px 0; overflow: hidden;
+      box-shadow: 0 4px 24px var(--shadow-card), inset 0 1px 0 var(--accent-dk);
+    }
+    .markdown-section pre > code {
+      display: block; overflow-x: auto; overflow-y: hidden;
+      padding: 0 !important;
+    }
+    .markdown-section pre::before {
+      content: ''; display: block; position: absolute; top: 12px; left: 14px;
+      width: 11px; height: 11px; border-radius: 50%;
+      background: #ff5f56;
+      box-shadow: 17px 0 0 #ffbd2e, 34px 0 0 #27c93f;
+    }
+    .markdown-section pre::after {
+      content: 'TERMINAL';
+      position: absolute; top: 10px; right: 14px;
+      font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+      color: var(--dim-tag);
+    }
+    .markdown-section pre > code, .markdown-section pre code {
+      font-family: var(--mono) !important;
+      font-size: 13.5px !important; line-height: 1.7 !important;
+      color: var(--code-text) !important;
+      background: transparent !important; padding: 0 !important; border: none !important;
+      text-shadow: none; white-space: pre;
+    }
+
+    /* ---------- Prism 语法配色 ---------- */
+    .token.comment, .token.proquote, .token.cdata { color: var(--tk-comment); font-style: italic; }
+    .token.keyword, .token.important { color: var(--tk-keyword); }
+    .token.string, .token.char, .token.attr-value { color: var(--tk-string); }
+    .token.number, .token.boolean { color: var(--tk-number); }
+    .token.function, .token.class-name { color: var(--tk-func); }
+    .token.tag, .token.selector { color: var(--tk-tag); }
+    .token.attr-name, .token.property { color: var(--tk-attr); }
+    .token.operator, .token.punctuation { color: var(--tk-punct); }
+    .token.parameter, .token.variable { color: var(--tk-var); }
+    .token.regex { color: var(--tk-regex); }
+
+    /* ---------- 表格 ---------- */
+    .markdown-section table {
+      width: 100%; border-collapse: collapse; margin: 18px 0;
+      font-size: 14px; display: table;
+    }
+    .markdown-section thead { background: var(--bg-elev); }
+    .markdown-section th {
+      padding: 10px 14px; text-align: left; font-weight: 650; color: var(--heading);
+      border-bottom: 2px solid var(--accent);
+      white-space: nowrap;
+    }
+    .markdown-section td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+    .markdown-section tbody tr { transition: background .12s; }
+    .markdown-section tbody tr:hover { background: var(--hover-bg); }
+
+    /* ---------- 引用块 ---------- */
+    .markdown-section blockquote {
+      margin: 16px 0; padding: 12px 18px;
+      border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
+      background: var(--accent-dk); color: var(--text);
+    }
+    .markdown-section blockquote p { margin: 6px 0; }
+
+    /* ---------- 列表 ---------- */
+    .markdown-section ul, .markdown-section ol { padding-left: 26px; }
+    .markdown-section li { margin: 5px 0; }
+    .markdown-section li::marker { color: var(--accent); }
+
+    /* ---------- 图片 ---------- */
+    .markdown-section img {
+      max-width: 100%; border-radius: 8px; border: 1px solid var(--border);
+      cursor: zoom-in; transition: border-color .15s;
+    }
+    .markdown-section img:hover { border-color: var(--accent); }
+
+    /* ---------- 分隔线 ---------- */
+    .markdown-section hr {
+      border: none; height: 1px; margin: 36px 0;
+      background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    }
+
+    /* ---------- copy-code ---------- */
+    .docsify-copy-code-button {
+      background: var(--bg-elev) !important; color: var(--text-dim) !important;
+      border: 1px solid var(--border); border-radius: 6px !important;
+      font-size: 11.5px !important; font-family: var(--mono) !important;
+      opacity: 0; transition: all .2s !important;
+    }
+    pre:hover .docsify-copy-code-button { opacity: 1; }
+    .docsify-copy-code-button:hover { color: var(--accent) !important; border-color: var(--accent) !important; }
+    .docsify-copy-code-button.success { color: var(--accent) !important; border-color: var(--accent) !important; }
+
+    /* ---------- 分页导航 ---------- */
+    .pagination-item {
+      display: inline-block; max-width: 46%;
+      padding: 12px 18px; margin-top: 42px;
+      background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px;
+      transition: all .15s;
+    }
+    .pagination-item:hover { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-dk); }
+    .pagination-item span { color: var(--accent); font-size: 12px; font-family: var(--mono); }
+    .pagination-item-title { color: var(--text) !important; font-size: 15px !important; font-weight: 600; }
+    .pagination-item:last-child { float: right; text-align: right; }
+
+    /* ---------- 回到顶部 / 图片放大 ---------- */
+    #back-top {
+      position: fixed; right: 26px; bottom: 30px; z-index: 70;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--bg-panel); border: 1px solid var(--border);
+      color: var(--accent); font-size: 17px; cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+      box-shadow: 0 4px 18px var(--shadow-card);
+      transition: all .15s;
+    }
+    #back-top.show { display: flex; }
+    #back-top:hover { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-dk); }
+
+    #img-mask {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(4,7,10,.92);
+      display: none; align-items: center; justify-content: center;
+      cursor: zoom-out; backdrop-filter: blur(4px);
+    }
+    #img-mask.show { display: flex; }
+    #img-mask img {
+      max-width: 92vw; max-height: 92vh;
+      border-radius: 8px; border: 1px solid var(--border);
+      box-shadow: 0 8px 60px rgba(0,0,0,.6);
+    }
+
+    /* ---------- Landing 首页 ---------- */
+    .hero { text-align: center; padding: 46px 0 10px; }
+    .hero-tag {
+      display: inline-block; font-family: var(--mono); font-size: 12px;
+      letter-spacing: 4px; color: var(--accent);
+      border: 1px solid var(--accent-dk); border-radius: 999px;
+      padding: 5px 18px; margin-bottom: 22px;
+      background: var(--accent-dk);
+      box-shadow: 0 0 20px var(--accent-dk);
+    }
+    .hero h1 { border: none !important; font-size: 44px !important; padding: 0 !important; margin-bottom: 14px !important; }
+    .hero h1::before { content: '' !important; }
+    .hero-sub { font-size: 17px; color: var(--text-dim); max-width: 640px; margin: 0 auto !important; }
+    .hero-sub strong { color: var(--accent); }
+    .hero-stats {
+      font-family: var(--mono); font-size: 13.5px; color: var(--cyan);
+      margin-top: 20px !important; letter-spacing: 1px;
+    }
+    .hero-cta { margin-top: 26px !important; }
+    .hero-cta a {
+      display: inline-block; margin: 0 8px; padding: 10px 26px;
+      border-radius: 8px; font-size: 15px; font-weight: 600;
+    }
+    .cta-main { background: var(--accent) !important; color: #04140b !important; box-shadow: 0 0 24px var(--accent-glow); }
+    .cta-main:hover { box-shadow: 0 0 34px var(--accent-glow); text-shadow: none !important; }
+    .cta-ghost { border: 1px solid var(--border); color: var(--text) !important; background: var(--bg-panel); }
+    .cta-ghost:hover { border-color: var(--accent); }
+
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 22px 0; }
+    .lab-card {
+      display: block; padding: 22px 22px 18px;
+      background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px;
+      transition: all .18s ease; color: var(--text) !important;
+      position: relative; overflow: hidden;
+    }
+    .lab-card:hover {
+      transform: translateY(-3px); border-color: var(--accent);
+      box-shadow: 0 8px 30px var(--shadow-card), 0 0 18px var(--accent-dk);
+      text-shadow: none !important;
+    }
+    .lab-card::after {
+      content: '>_'; position: absolute; right: 16px; top: 12px;
+      font-family: var(--mono); font-size: 15px; color: var(--accent); opacity: .18;
+    }
+    .lab-icon { font-size: 30px; margin-bottom: 8px; }
+    .lab-name { font-family: var(--mono); font-size: 17px; font-weight: 700; color: var(--heading); margin-bottom: 6px; }
+    .lab-desc { font-size: 13.5px; color: var(--text-dim); line-height: 1.65; margin-bottom: 12px; }
+    .pill {
+      display: inline-block; font-family: var(--mono); font-size: 11.5px;
+      padding: 2px 10px; border-radius: 999px; margin-right: 6px;
+      color: var(--cyan); background: var(--accent-dk); border: 1px solid var(--accent-dk);
+    }
+    .pill.green { color: var(--accent); border-color: var(--accent); }
+
+    .quick-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 20px 0; }
+    .step-card { padding: 18px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; }
+    .step-num {
+      font-family: var(--mono); font-size: 12px; color: var(--accent);
+      border: 1px solid var(--accent-dk); border-radius: 6px;
+      display: inline-block; padding: 1px 9px; margin-bottom: 10px;
+    }
+    .step-card h4 { margin: 0 0 6px !important; font-size: 15px; color: var(--heading); }
+    .step-card p { font-size: 13px; color: var(--text-dim); margin: 0 !important; line-height: 1.7; }
+
+    .disclaimer {
+      border: 1px solid var(--warn-border); border-radius: 10px;
+      background: var(--warn-bg); padding: 14px 20px; margin: 30px 0 6px;
+    }
+    .disclaimer p { color: var(--warn-text) !important; margin: 4px 0 !important; }
+
+    .home-footer { text-align: center; color: var(--muted); font-family: var(--mono); font-size: 12.5px; margin-top: 44px !important; }
+    .home-footer a { color: var(--home-dim); }
+
+    .lang-note {
+      font-size: 13px; color: var(--text-dim);
+      border: 1px dashed var(--border); border-radius: 8px;
+      padding: 10px 16px; margin: 24px 0 4px;
+    }
+
+    /* ---------- 进度条 ---------- */
+    .progress { position: fixed; top: 56px; left: 0; right: 0; height: 2px; z-index: 65; background: transparent; }
+    .progress > span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan)) !important;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* ---------- 响应式 / 打印 ---------- */
+    @media (max-width: 920px) {
+      :root { --sidebar-w: 260px; }
+      .content { left: 0; }
+      .sidebar { transform: translateX(-100%); box-shadow: 8px 0 40px rgba(0,0,0,.5); }
+      body.close .sidebar { transform: translateX(0); }
+      .sidebar-toggle { left: 0; border-radius: 0 8px 0 0; }
+      body.close .sidebar-toggle { left: var(--sidebar-w); }
+      .markdown-section { padding: 76px 22px 100px; }
+      .card-grid, .quick-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 32px !important; }
+      .app-nav { padding: 0 16px; }
+    }
+    @media print { .sidebar, .sidebar-toggle, #back-top, .app-nav { display: none !important; } .content { left: 0; } }
   </style>
 </head>
 <body>
-  <div id="app">加载中…</div>
+  <div id="app">加载中<span id="boot-cursor">▊</span>...</div>
+
   <script>
     window.$docsify = {
-      name: 'LabsTutorialNotes',
-      repo: 'https://github.com/hacker369/LabsTutorialNotes',
+      homepage: 'home.md',
       loadSidebar: true,
       loadNavbar: true,
       subMaxLevel: 3,
+      mergeNavbar: true,
+      maxLevel: 4,
       auto2top: true,
-      homepage: 'home.md',
-      relativePath: true,
-      search: {
-        placeholder: '搜索笔记',
-        noData: '没有结果',
-        depth: 4
-      },
       alias: {
         '/.*/_sidebar.md': '/_sidebar.md',
         '/.*/_navbar.md': '/_navbar.md'
+      },
+      notFoundPage: true,
+      search: {
+        maxAge: 86400000,
+        paths: 'auto',
+        placeholder: '搜索关卡 / 漏洞类型…',
+        noData: '没有找到相关内容',
+        depth: 3,
+        hideOtherSidebarContent: false
       },
       copyCode: {
         buttonText: '复制',
         errorText: '复制失败',
         successText: '已复制 ✓'
-      }
+      },
+      pagination: {
+        previousText: '← 上一篇',
+        nextText: '下一篇 →',
+        crossChapter: true,
+        crossChapterText: true
+      },
+      plugins: [
+        /* 侧栏 active：页面级链接手动匹配（docsify 对中文路径匹配不稳定）；
+           子标题交给 docsify 原生滚动高亮，仅在新页面加载时清一次残留 */
+        function (hook) {
+          /* docsify 侧栏请求固定发向根目录，子目录侧栏方案不可行 → 按路由前缀动态切换 DOM */
+          var EN_SIDEBAR = '<ul>'
+            + '<li><a href="#/en/README.md">🏠 Home</a></li>'
+            + '<li><p><strong>🧪 Lab Walkthroughs</strong></p><ul>'
+            + '  <li><a href="#/sqli-labs靶场通关笔记.md">💉 sqli-labs</a></li>'
+            + '  <li><a href="#/xss-labs靶场通关笔记.md">⚡ xss-labs</a></li>'
+            + '  <li><a href="#/upload-labs靶场通关笔记.md">📤 upload-labs</a></li>'
+            + '  <li><a href="#/GoogleXSSGame靶场通关笔记.md">🎯 Google XSS Game</a></li>'
+            + '</ul></li>'
+            + '<li><p><strong>📚 More</strong></p><ul>'
+            + '  <li><a href="#/docs/MAINTENANCE.md">🛠️ Maintenance</a></li>'
+            + '  <li><a href="https://github.com/hacker369/LabsTutorialNotes">🐙 GitHub Repo</a></li>'
+            + '  <li><a href="https://hacker369.github.io/VulhubTutorialNotes.github.io/">🔗 Vulhub Notes</a></li>'
+            + '</ul></li>'
+            + '</ul>';
+
+          function markActive() {
+            var cur = decodeURIComponent(location.hash.split('?')[0].replace(/^#/, ''));
+            cur = cur.replace(/\.md$/, '');
+            var isHome = (cur === '/' || cur === '' || cur === '/README' || cur === '/en' || cur === '/en/' || cur === '/en/README');
+            document.querySelectorAll('.sidebar-nav a').forEach(function (a) {
+              if (a.closest('.app-sub-sidebar')) { a.classList.remove('active'); return; }
+              var href = (a.getAttribute('href') || '').split('?')[0];
+              var h = decodeURIComponent(href.replace(/^#/, '')).replace(/\.md$/, '');
+              var on = isHome ? (h === '/' || h === '' || h === '/README' || h === '/en/README') : (h !== '' && h === cur);
+              a.classList.toggle('active', on);
+            });
+          }
+
+          function switchSidebar() {
+            var nav = document.querySelector('.sidebar-nav');
+            if (!nav) return;
+            var en = location.hash.indexOf('#/en/') === 0;
+            if (en && nav.getAttribute('data-lang') !== 'en') {
+              nav.setAttribute('data-orig-html', nav.innerHTML);
+              nav.setAttribute('data-lang', 'en');
+              nav.innerHTML = EN_SIDEBAR;
+            } else if (!en && nav.getAttribute('data-lang') === 'en') {
+              nav.removeAttribute('data-lang');
+              nav.innerHTML = nav.getAttribute('data-orig-html') || '';
+            }
+            markActive();
+          }
+
+          hook.doneEach(function () {
+            /* 等一帧确保 docsify 本轮侧栏渲染完成后再切换/标记 */
+            requestAnimationFrame(switchSidebar);
+          });
+        },
+        /* 顶栏右侧控件：主题切换（默认暗色）+ 语言切换（中/EN） */
+        function (hook, vm) {
+          hook.ready(function () {
+            var nav = document.querySelector('.app-nav');
+            if (!nav || document.getElementById('ui-controls')) return;
+            var box = document.createElement('div');
+            box.id = 'ui-controls';
+            box.innerHTML = '<button id="theme-btn" title="主题切换 Theme">☀️</button><button id="lang-btn" title="Language">EN</button>';
+            nav.appendChild(box);
+            var themeBtn = document.getElementById('theme-btn');
+            var langBtn = document.getElementById('lang-btn');
+            function applyTheme(t) {
+              document.documentElement.setAttribute('data-theme', t);
+              themeBtn.textContent = (t === 'light') ? '🌙' : '☀️';
+              try { localStorage.setItem('ltn-theme', t); } catch (e) {}
+            }
+            applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+            themeBtn.addEventListener('click', function () {
+              applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+            });
+            function applyLang() {
+              var en = (vm.route.path || '').indexOf('/en/') === 0;
+              langBtn.textContent = en ? '中文' : 'EN';
+              langBtn.title = en ? '切换到中文' : 'Switch to English';
+            }
+            applyLang();
+            langBtn.addEventListener('click', function () {
+              var en = (vm.route.path || '').indexOf('/en/') === 0;
+              location.hash = en ? '#/' : '#/en/README.md';
+            });
+          });
+        }
+      ]
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4.12.2/lib/docsify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4.12.2/lib/plugins/search.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@3/dist/docsify-copy-code.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-markup.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-clike.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-php.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-http.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-clike.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-php.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-http.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-sql.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+
+  <script>
+    /* ---------- 回到顶部 ---------- */
+    (function () {
+      var btn = document.createElement('button');
+      btn.id = 'back-top'; btn.textContent = '↑'; btn.title = '回到顶部';
+      document.body.appendChild(btn);
+      window.addEventListener('scroll', function () {
+        var c = document.querySelector('.content');
+        btn.classList.toggle('show', (c ? c.scrollTop : window.scrollY) > 600);
+      }, { passive: true });
+      btn.addEventListener('click', function () {
+        var c = document.querySelector('.content');
+        if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); else window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+
+    /* ---------- 图片点击放大 ---------- */
+    (function () {
+      var mask = document.createElement('div');
+      mask.id = 'img-mask';
+      var big = document.createElement('img');
+      mask.appendChild(big);
+      document.body.appendChild(mask);
+      mask.addEventListener('click', function () { mask.classList.remove('show'); });
+      document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t && t.tagName === 'IMG' && t.closest('.markdown-section')) {
+          big.src = t.currentSrc || t.src;
+          mask.classList.add('show');
+        }
+      });
+    })();
+
+    /* ---------- 启动光标闪烁 ---------- */
+    (function () {
+      var c = document.getElementById('boot-cursor');
+      if (!c) return;
+      setInterval(function () { c.style.opacity = c.style.opacity === '0' ? '1' : '0'; }, 500);
+    })();
+  </script>
 </body>
 </html>
