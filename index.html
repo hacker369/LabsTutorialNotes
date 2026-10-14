@@ -7,8 +7,12 @@
   <meta name="description" content="sqli-labs / xss-labs / upload-labs / Google XSS Game 全关卡通关实录：120+ 关卡、700+ payload、1000+ 实操截图">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
   <script>
-    /* 防闪烁：渲染前恢复用户上次选择的主题（默认暗色） */
-    try { if (localStorage.getItem('ltn-theme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
+    /* 防闪烁：渲染前恢复用户上次选择的主题（默认暗色）与正文字号 */
+    try {
+      if (localStorage.getItem('ltn-theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      var ltnFs = parseFloat(localStorage.getItem('ltn-fs'));
+      if (ltnFs >= 0.8 && ltnFs <= 1.5) document.documentElement.style.setProperty('--fs-scale', ltnFs);
+    } catch (e) {}
   </script>
   <style>
     /* ============================================================
@@ -55,6 +59,9 @@
       --mono: 'JetBrains Mono','Cascadia Code','Fira Code',ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
       --sans: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
       --sidebar-w: 272px;
+      /* 正文缩放系数（A−/A+ 按钮调节，localStorage 记忆）与锚点滚动偏移 */
+      --fs-scale: 1;
+      --scroll-offset: 76px;
     }
     html[data-theme="light"] {
       --bg:        #f6f8fa;
@@ -144,10 +151,27 @@
     .app-nav a::before { content: '> '; color: var(--accent); font-family: var(--mono); font-size: 12px; opacity: 0; transition: opacity .15s; }
     .app-nav a:hover::before { opacity: 1; }
 
-    /* 顶栏右侧控件（主题 / 语言） */
+    /* 顶栏左侧品牌标识 */
+    .nav-brand {
+      position: absolute; left: 28px; top: 0; height: 56px;
+      display: inline-flex; align-items: center; gap: 9px;
+      font-family: var(--mono); font-size: 15.5px; font-weight: 700;
+      color: var(--heading); letter-spacing: .2px; text-decoration: none;
+    }
+    .nav-brand::before {
+      content: ''; width: 4px; height: 20px; border-radius: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--cyan));
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+    .nav-brand .brand-glyph { font-size: 17px; }
+    .nav-brand .brand-dim { color: var(--text-dim); font-weight: 500; }
+    .nav-brand:hover { color: var(--heading); text-shadow: 0 0 14px var(--accent-glow); }
+    .nav-brand:hover::before { box-shadow: 0 0 16px var(--accent-glow); }
+
+    /* 顶栏右侧控件（字号 / 主题 / 语言） */
     #ui-controls { display: flex; align-items: center; margin-left: 14px; }
     #ui-controls button {
-      width: 34px; height: 30px; margin-left: 8px;
+      min-width: 34px; height: 30px; padding: 0 7px; margin-left: 8px;
       background: var(--bg-elev); color: var(--text);
       border: 1px solid var(--border); border-radius: 7px;
       font-size: 12.5px; font-family: var(--mono); cursor: pointer;
@@ -157,6 +181,9 @@
       border-color: var(--accent); color: var(--accent);
       box-shadow: 0 0 10px var(--accent-dk);
     }
+    #ui-controls button[disabled] { opacity: .38; cursor: not-allowed; box-shadow: none; }
+    #ui-controls button[disabled]:hover { border-color: var(--border); color: var(--text); }
+    #ui-controls .fs-divider { width: 1px; height: 18px; background: var(--border); margin-left: 14px; }
 
     /* ---------- 侧栏 ---------- */
     .sidebar {
@@ -204,10 +231,16 @@
       color: var(--text-dim); font-size: 14px; line-height: 1.5;
       border-left: 2px solid transparent;
     }
+    /* 顶层项（首页）与组标题（靶场笔记/相关）统一 14px/600，层级一致 */
     .sidebar-nav > ul > li > a {
-      color: var(--text); font-weight: 600; font-size: 13px;
-      letter-spacing: .5px; margin-top: 8px;
+      color: var(--text); font-weight: 600; font-size: 14px;
+      letter-spacing: .3px; margin-top: 8px;
     }
+    .sidebar-nav > ul > li > p {
+      margin: 14px 0 4px; font-size: 14px; font-weight: 600;
+      color: var(--text); letter-spacing: .3px;
+    }
+    .sidebar-nav > ul > li > p strong { font-size: inherit; font-weight: inherit; }
     .sidebar-nav > ul > li > a::before {
       content: '// '; color: var(--accent); font-family: var(--mono); font-weight: 400;
     }
@@ -246,19 +279,19 @@
     }
     .markdown-section {
       max-width: 860px; margin: 0 auto; padding: 88px 44px 120px;
-      font-size: 15.5px; line-height: 1.85;
+      font-size: calc(15.5px * var(--fs-scale, 1)); line-height: 1.85;
     }
 
-    /* 标题体系 */
+    /* 标题体系（em 相对正文，随 A−/A+ 缩放） */
     .markdown-section h1 {
-      font-size: 34px; font-weight: 700; color: var(--heading);
+      font-size: 2.2em; font-weight: 700; color: var(--heading);
       margin: 0 0 8px; padding-bottom: 14px; line-height: 1.3;
       border-bottom: 2px solid transparent;
       border-image: linear-gradient(90deg, var(--accent), transparent) 1;
     }
     .markdown-section h1::before { content: '# '; color: var(--accent); opacity: .6; font-weight: 400; }
     .markdown-section h2 {
-      font-size: 23px; font-weight: 650; color: var(--heading);
+      font-size: 1.48em; font-weight: 650; color: var(--heading);
       margin: 46px 0 16px; padding-left: 14px; position: relative;
     }
     .markdown-section h2::before {
@@ -270,7 +303,7 @@
       content: '##'; position: absolute; right: 0; top: 8px;
       color: var(--accent); font-family: var(--mono); font-size: 13px; opacity: .25; font-weight: 400;
     }
-    .markdown-section h3 { font-size: 18.5px; color: var(--heading); margin: 32px 0 12px; }
+    .markdown-section h3 { font-size: 1.19em; color: var(--heading); margin: 32px 0 12px; }
     .markdown-section h3::before { content: '▸ '; color: var(--cyan); }
     .markdown-section h4 { color: var(--text); margin: 24px 0 10px; }
     .markdown-section p { margin: 12px 0; }
@@ -320,7 +353,7 @@
     }
     .markdown-section pre > code, .markdown-section pre code {
       font-family: var(--mono) !important;
-      font-size: 13.5px !important; line-height: 1.7 !important;
+      font-size: 0.87em !important; line-height: 1.7 !important;
       color: var(--code-text) !important;
       background: transparent !important; padding: 0 !important; border: none !important;
       text-shadow: none; white-space: pre;
@@ -341,7 +374,7 @@
     /* ---------- 表格 ---------- */
     .markdown-section table {
       width: 100%; border-collapse: collapse; margin: 18px 0;
-      font-size: 14px; display: table;
+      font-size: 0.9em; display: table;
     }
     .markdown-section thead { background: var(--bg-elev); }
     .markdown-section th {
@@ -399,7 +432,7 @@
     }
     .pagination-item:hover { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-dk); }
     .pagination-item span { color: var(--accent); font-size: 12px; font-family: var(--mono); }
-    .pagination-item-title { color: var(--text) !important; font-size: 15px !important; font-weight: 600; }
+    .pagination-item-title { color: var(--text) !important; font-size: 0.97em !important; font-weight: 600; }
     .pagination-item:last-child { float: right; text-align: right; }
 
     /* ---------- 回到顶部 / 图片放大 ---------- */
@@ -438,18 +471,18 @@
       background: var(--accent-dk);
       box-shadow: 0 0 20px var(--accent-dk);
     }
-    .hero h1 { border: none !important; font-size: 44px !important; padding: 0 !important; margin-bottom: 14px !important; }
+    .hero h1 { border: none !important; font-size: 2.84em !important; padding: 0 !important; margin-bottom: 14px !important; }
     .hero h1::before { content: '' !important; }
-    .hero-sub { font-size: 17px; color: var(--text-dim); max-width: 640px; margin: 0 auto !important; }
+    .hero-sub { font-size: 1.1em; color: var(--text-dim); max-width: 640px; margin: 0 auto !important; }
     .hero-sub strong { color: var(--accent); }
     .hero-stats {
-      font-family: var(--mono); font-size: 13.5px; color: var(--cyan);
+      font-family: var(--mono); font-size: 0.87em; color: var(--cyan);
       margin-top: 20px !important; letter-spacing: 1px;
     }
     .hero-cta { margin-top: 26px !important; }
     .hero-cta a {
       display: inline-block; margin: 0 8px; padding: 10px 26px;
-      border-radius: 8px; font-size: 15px; font-weight: 600;
+      border-radius: 8px; font-size: 0.97em; font-weight: 600;
     }
     .cta-main { background: var(--accent) !important; color: #04140b !important; box-shadow: 0 0 24px var(--accent-glow); }
     .cta-main:hover { box-shadow: 0 0 34px var(--accent-glow); text-shadow: none !important; }
@@ -472,11 +505,11 @@
       content: '>_'; position: absolute; right: 16px; top: 12px;
       font-family: var(--mono); font-size: 15px; color: var(--accent); opacity: .18;
     }
-    .lab-icon { font-size: 30px; margin-bottom: 8px; }
-    .lab-name { font-family: var(--mono); font-size: 17px; font-weight: 700; color: var(--heading); margin-bottom: 6px; }
-    .lab-desc { font-size: 13.5px; color: var(--text-dim); line-height: 1.65; margin-bottom: 12px; }
+    .lab-icon { font-size: 1.94em; margin-bottom: 8px; }
+    .lab-name { font-family: var(--mono); font-size: 1.1em; font-weight: 700; color: var(--heading); margin-bottom: 6px; }
+    .lab-desc { font-size: 0.87em; color: var(--text-dim); line-height: 1.65; margin-bottom: 12px; }
     .pill {
-      display: inline-block; font-family: var(--mono); font-size: 11.5px;
+      display: inline-block; font-family: var(--mono); font-size: 0.74em;
       padding: 2px 10px; border-radius: 999px; margin-right: 6px;
       color: var(--cyan); background: var(--accent-dk); border: 1px solid var(--accent-dk);
     }
@@ -485,12 +518,12 @@
     .quick-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 20px 0; }
     .step-card { padding: 18px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; }
     .step-num {
-      font-family: var(--mono); font-size: 12px; color: var(--accent);
+      font-family: var(--mono); font-size: 0.77em; color: var(--accent);
       border: 1px solid var(--accent-dk); border-radius: 6px;
       display: inline-block; padding: 1px 9px; margin-bottom: 10px;
     }
-    .step-card h4 { margin: 0 0 6px !important; font-size: 15px; color: var(--heading); }
-    .step-card p { font-size: 13px; color: var(--text-dim); margin: 0 !important; line-height: 1.7; }
+    .step-card h4 { margin: 0 0 6px !important; font-size: 0.97em; color: var(--heading); }
+    .step-card p { font-size: 0.84em; color: var(--text-dim); margin: 0 !important; line-height: 1.7; }
 
     .disclaimer {
       border: 1px solid var(--warn-border); border-radius: 10px;
@@ -498,11 +531,11 @@
     }
     .disclaimer p { color: var(--warn-text) !important; margin: 4px 0 !important; }
 
-    .home-footer { text-align: center; color: var(--muted); font-family: var(--mono); font-size: 12.5px; margin-top: 44px !important; }
+    .home-footer { text-align: center; color: var(--muted); font-family: var(--mono); font-size: 0.81em; margin-top: 44px !important; }
     .home-footer a { color: var(--home-dim); }
 
     .lang-note {
-      font-size: 13px; color: var(--text-dim);
+      font-size: 0.84em; color: var(--text-dim);
       border: 1px dashed var(--border); border-radius: 8px;
       padding: 10px 16px; margin: 24px 0 4px;
     }
@@ -524,7 +557,7 @@
       body.close .sidebar-toggle { left: var(--sidebar-w); }
       .markdown-section { padding: 76px 22px 100px; }
       .card-grid, .quick-grid { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 32px !important; }
+      .hero h1 { font-size: 2.06em !important; }
       .app-nav { padding: 0 16px; }
     }
     @media print { .sidebar, .sidebar-toggle, #back-top, .app-nav { display: none !important; } .content { left: 0; } }
@@ -534,6 +567,186 @@
   <div id="app">加载中<span id="boot-cursor">▊</span>...</div>
 
   <script>
+    /* ============================================================
+       工具层：锚点滚动接管 / 字号调节 / 品牌与顶栏控件
+       说明：docsify 原生滚动（?id= 锚点、auto2top）只作用于 window，
+       而本站滚动容器是 .content → 必须自行接管，否则点击侧栏小节不跳转。
+       ============================================================ */
+    var LTN = { hashPath: null, renderedPath: null, first: true };
+    var LTN_FS_STEPS = [0.9, 1, 1.15, 1.3];
+
+    function ltnDecode(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+    /* 路径归一化：地址栏可能带/不带 .md 后缀（进入方式不同），统一去掉再比较 */
+    function ltnStripMd(s) {
+      return (s.length > 3 && s.slice(-3) === '.md') ? s.slice(0, -3) : s;
+    }
+    function ltnParseRoute() {
+      var h = location.hash.charAt(0) === '#' ? location.hash.slice(1) : location.hash;
+      var qIdx = h.indexOf('?');
+      var path = qIdx === -1 ? h : h.slice(0, qIdx);
+      var id = '';
+      if (qIdx !== -1) {
+        var parts = h.slice(qIdx + 1).split('&');
+        for (var i = 0; i < parts.length; i++) {
+          if (parts[i].indexOf('id=') === 0) { id = parts[i].slice(3); break; }
+        }
+      }
+      return { path: ltnStripMd(ltnDecode(path)), id: ltnDecode(id) };
+    }
+    function ltnContentEl() { return document.querySelector('.content'); }
+    function ltnScrollOffset() {
+      var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--scroll-offset'));
+      return isNaN(v) ? 76 : v;
+    }
+    /* 目标标题在 .content 滚动坐标系里的位置；未就绪返回 null */
+    function ltnAnchorTarget(id) {
+      var el = document.getElementById(id);
+      var c = ltnContentEl();
+      if (!el || !c) return null;
+      return Math.max(0, c.scrollTop + el.getBoundingClientRect().top - c.getBoundingClientRect().top - ltnScrollOffset());
+    }
+    function ltnScrollToId(id, smooth) {
+      var t = ltnAnchorTarget(id);
+      if (t === null) return false;
+      ltnContentEl().scrollTo({ top: t, behavior: smooth ? 'smooth' : 'auto' });
+      return true;
+    }
+    function ltnScrollTop(instant) {
+      var c = ltnContentEl();
+      if (c) c.scrollTo({ top: 0, behavior: instant ? 'auto' : 'smooth' });
+      window.scrollTo(0, 0);
+    }
+    /* 跨页锚点：渲染后瞬时定位 + 持续校正（图片加载引起高度漂移），用户一旦操作即停止 */
+    function ltnAnchorLoop(id) {
+      var deadline = Date.now() + 3000, last = null, broke = false;
+      function stop() { broke = true; }
+      ['wheel', 'touchstart', 'mousedown', 'keydown'].forEach(function (ev) {
+        window.addEventListener(ev, stop, { once: true, passive: true });
+      });
+      (function tick() {
+        if (broke || Date.now() > deadline) return;
+        var t = ltnAnchorTarget(id);
+        if (t === null) { setTimeout(tick, 160); return; }
+        if (last === null || Math.abs(t - last) > 2) { ltnScrollToId(id, false); last = t; }
+        setTimeout(tick, 160);
+      })();
+    }
+    /* 渲染完成后的滚动决策：锚点优先，其次切页回顶 */
+    function ltnOnRendered() {
+      var r = ltnParseRoute();
+      var changed = (r.path !== LTN.renderedPath);
+      LTN.renderedPath = r.path;
+      LTN.hashPath = r.path;
+      if (r.id) {
+        ltnScrollToId(r.id, false);
+        if (changed) ltnAnchorLoop(r.id);
+      } else if (changed && !LTN.first) {
+        ltnScrollTop(true);
+      }
+      LTN.first = false;
+    }
+    /* 子标题高亮跟随当前 ?id=（点击哪个小节就亮哪个） */
+    function ltnMarkSubActive() {
+      var r = ltnParseRoute();
+      var subs = document.querySelectorAll('.app-sub-sidebar a');
+      for (var i = 0; i < subs.length; i++) {
+        var a = subs[i];
+        var href = a.getAttribute('href') || '';
+        var qIdx = href.indexOf('?');
+        var path = ltnStripMd(ltnDecode(qIdx === -1 ? href.slice(1) : href.slice(1, qIdx)));
+        var sid = '';
+        if (qIdx !== -1) {
+          var parts = href.slice(qIdx + 1).split('&');
+          for (var j = 0; j < parts.length; j++) {
+            if (parts[j].indexOf('id=') === 0) { sid = ltnDecode(parts[j].slice(3)); break; }
+          }
+        }
+        a.classList.toggle('active', !!r.id && path === r.path && sid === r.id);
+      }
+    }
+    /* 顶栏品牌标识（幂等：navbar 若被重渲染则自动补回） */
+    function ltnEnsureBrand() {
+      var nav = document.querySelector('.app-nav');
+      if (!nav || document.getElementById('nav-brand')) return;
+      var brand = document.createElement('a');
+      brand.id = 'nav-brand';
+      brand.className = 'nav-brand';
+      brand.href = '#/';
+      brand.title = '回到首页 · Home';
+      brand.innerHTML = '<span class="brand-glyph">🛡️</span><span>LabsTutorial</span><span class="brand-dim">Notes</span>';
+      nav.insertBefore(brand, nav.firstChild);
+    }
+    /* navbar 由 docsify 异步重渲染（与内容渲染并行，晚于 doneEach），
+       用 MutationObserver 兑底：一旦被清空立即补回品牌与控件 */
+    function ltnWatchNav() {
+      if (LTN.navObs) return;
+      var nav = document.querySelector('.app-nav');
+      if (!nav) return;
+      LTN.navObs = new MutationObserver(function () {
+        if (!document.getElementById('nav-brand')) ltnEnsureBrand();
+        if (!document.getElementById('ui-controls')) ltnBuildControls();
+      });
+      LTN.navObs.observe(nav, { childList: true });
+    }
+    /* 字号档位：0.9 / 1 / 1.15 / 1.3，localStorage 记忆 */
+    function ltnFsIndex() {
+      var cur = parseFloat(document.documentElement.style.getPropertyValue('--fs-scale'))
+             || parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fs-scale')) || 1;
+      var best = 1, diff = 9;
+      for (var i = 0; i < LTN_FS_STEPS.length; i++) {
+        var d = Math.abs(LTN_FS_STEPS[i] - cur);
+        if (d < diff) { diff = d; best = i; }
+      }
+      return best;
+    }
+    function ltnApplyFs(i) {
+      i = Math.max(0, Math.min(LTN_FS_STEPS.length - 1, i));
+      var v = LTN_FS_STEPS[i];
+      document.documentElement.style.setProperty('--fs-scale', v);
+      try { localStorage.setItem('ltn-fs', String(v)); } catch (e) {}
+      var minus = document.getElementById('fs-minus');
+      var plus = document.getElementById('fs-plus');
+      if (minus) minus.disabled = (i === 0);
+      if (plus) plus.disabled = (i === LTN_FS_STEPS.length - 1);
+    }
+    /* 顶栏右侧控件构建：字号 A−/A+ · 主题 ☀️/🌙 · 语言 EN/中文 */
+    function ltnBuildControls(vm) {
+      var nav = document.querySelector('.app-nav');
+      if (!nav || document.getElementById('ui-controls')) return;
+      var box = document.createElement('div');
+      box.id = 'ui-controls';
+      box.innerHTML = '<button id="fs-minus" title="减小正文字号">A-</button>'
+        + '<button id="fs-plus" title="增大正文字号">A+</button>'
+        + '<span class="fs-divider"></span>'
+        + '<button id="theme-btn" title="主题切换 Theme">☀️</button>'
+        + '<button id="lang-btn" title="Language">EN</button>';
+      nav.appendChild(box);
+      document.getElementById('fs-minus').addEventListener('click', function () { ltnApplyFs(ltnFsIndex() - 1); });
+      document.getElementById('fs-plus').addEventListener('click', function () { ltnApplyFs(ltnFsIndex() + 1); });
+      ltnApplyFs(ltnFsIndex());
+      var themeBtn = document.getElementById('theme-btn');
+      function applyTheme(t) {
+        document.documentElement.setAttribute('data-theme', t);
+        themeBtn.textContent = (t === 'light') ? '🌙' : '☀️';
+        try { localStorage.setItem('ltn-theme', t); } catch (e) {}
+      }
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+      themeBtn.addEventListener('click', function () {
+        applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+      });
+      var langBtn = document.getElementById('lang-btn');
+      function applyLang() {
+        var en = (vm.route.path || '').indexOf('/en/') === 0;
+        langBtn.textContent = en ? '中文' : 'EN';
+        langBtn.title = en ? '切换到中文' : 'Switch to English';
+      }
+      applyLang();
+      langBtn.addEventListener('click', function () {
+        var en = (vm.route.path || '').indexOf('/en/') === 0;
+        location.hash = en ? '#/' : '#/en/README.md';
+      });
+    }
+
     window.$docsify = {
       homepage: 'home.md',
       loadSidebar: true,
@@ -615,40 +828,25 @@
           }
 
           hook.doneEach(function () {
-            /* 等一帧确保 docsify 本轮侧栏渲染完成后再切换/标记 */
-            requestAnimationFrame(switchSidebar);
+            /* 滚动决策（锚点/回顶）立即执行；侧栏切换等一帧待本轮渲染收尾 */
+            ltnOnRendered();
+            requestAnimationFrame(function () {
+              switchSidebar();
+              ltnMarkSubActive();
+            });
           });
         },
-        /* 顶栏右侧控件：主题切换（默认暗色）+ 语言切换（中/EN） */
+        /* 顶栏：品牌标识 + 右侧控件（字号 A−/A+ · 主题 · 语言），幂等可重建 */
         function (hook, vm) {
           hook.ready(function () {
-            var nav = document.querySelector('.app-nav');
-            if (!nav || document.getElementById('ui-controls')) return;
-            var box = document.createElement('div');
-            box.id = 'ui-controls';
-            box.innerHTML = '<button id="theme-btn" title="主题切换 Theme">☀️</button><button id="lang-btn" title="Language">EN</button>';
-            nav.appendChild(box);
-            var themeBtn = document.getElementById('theme-btn');
-            var langBtn = document.getElementById('lang-btn');
-            function applyTheme(t) {
-              document.documentElement.setAttribute('data-theme', t);
-              themeBtn.textContent = (t === 'light') ? '🌙' : '☀️';
-              try { localStorage.setItem('ltn-theme', t); } catch (e) {}
-            }
-            applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
-            themeBtn.addEventListener('click', function () {
-              applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-            });
-            function applyLang() {
-              var en = (vm.route.path || '').indexOf('/en/') === 0;
-              langBtn.textContent = en ? '中文' : 'EN';
-              langBtn.title = en ? '切换到中文' : 'Switch to English';
-            }
-            applyLang();
-            langBtn.addEventListener('click', function () {
-              var en = (vm.route.path || '').indexOf('/en/') === 0;
-              location.hash = en ? '#/' : '#/en/README.md';
-            });
+            ltnEnsureBrand();
+            ltnBuildControls(vm);
+            ltnWatchNav();
+          });
+          hook.doneEach(function () {
+            /* navbar 若被 docsify 重渲染导致控件丢失，这里自动补回 */
+            ltnEnsureBrand();
+            if (!document.getElementById('ui-controls')) ltnBuildControls(vm);
           });
         }
       ]
@@ -667,6 +865,47 @@
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
 
   <script>
+    /* ---------- 锚点滚动全局接管 ----------
+       同页点子标题（仅 query 变化，docsify 不重渲染也不触发 doneEach）
+       → hashchange 里立即平滑滚动；
+       跨页带 ?id= → 等 doneEach 渲染完成后瞬时定位+校正；
+       点击与当前地址完全相同的链接（hash 不变、无 hashchange 事件）
+       → 兜底：有 id 平滑滚过去，无 id 回到顶部。 */
+    window.addEventListener('hashchange', function () {
+      var r = ltnParseRoute();
+      var samePage = (r.path === LTN.hashPath);
+      LTN.hashPath = r.path;
+      if (samePage) {
+        /* 仅 query 变化：docsify 不重渲染、不触发 doneEach，滚动+高亮都在这里处理 */
+        if (r.id) ltnScrollToId(r.id, true);
+        ltnMarkSubActive();
+      }
+    });
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      var a = (t && t.closest) ? t.closest('a') : null;
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (href.charAt(0) !== '#') return;
+      /* 与当前路由完全相同（路径+锚点一致）的链接点击 → 浏览器无动作，这里手动滚动 */
+      var h = href.slice(1);
+      var qIdx = h.indexOf('?');
+      var path = ltnStripMd(ltnDecode(qIdx === -1 ? h : h.slice(0, qIdx)));
+      var cur = ltnParseRoute();
+      if (path !== cur.path) return;                  /* 跨页导航，交给 docsify */
+      var id = '';
+      if (qIdx !== -1) {
+        var parts = h.slice(qIdx + 1).split('&');
+        for (var i = 0; i < parts.length; i++) {
+          if (parts[i].indexOf('id=') === 0) { id = ltnDecode(parts[i].slice(3)); break; }
+        }
+      }
+      if ((id || '') === (cur.id || '')) {
+        e.preventDefault();
+        if (id) ltnScrollToId(id, true); else ltnScrollTop(false);
+      }
+    });
+
     /* ---------- 回到顶部 ---------- */
     (function () {
       var btn = document.createElement('button');
