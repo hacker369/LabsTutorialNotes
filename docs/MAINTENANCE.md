@@ -5,11 +5,12 @@
 ## 当前结构
 
 - 根目录的四篇 Markdown 文件仍保留为原始完整笔记，供对照和回溯。
-- `notes/<lab>/README.md` 是各靶场的导航入口。
-- SQLi-Labs 已按环境与基础、Less-1–65 关卡范围及速查/防御拆分到 `notes/sqli-labs/`。
-- `docs/` 存放共用的环境指南、故障排查、笔记模板和术语表。
-- `img/` 暂时保留既有截图路径；拆分后的 SQLi-Labs 笔记使用 `../../img/` 指向仓库根目录图片。
-- `scripts/check_images.py` 与 GitHub Actions 用于检查图片引用和文件体积。
+- notes/<lab>/README.md 是各靶场的导航入口。
+- SQLi-Labs 已按环境与基础、Less-1–65 关卡范围及速查/防御拆分到 notes/sqli-labs/。
+- Upload-Labs 已拆分为环境基础、Pass-01–21 章节与通用方法论/防御，原始笔记继续保留作存档。
+- docs/ 存放共用的环境指南、故障排查、笔记模板和术语表。
+- img/ 暂时保留既有截图路径；位于 notes/<lab>/ 的拆分笔记按目录深度使用 ../../img/ 指向仓库根目录图片。
+- scripts/check_images.py 与 GitHub Actions 用于检查图片引用和文件体积。
 
 ## 内容质量标准
 
@@ -27,11 +28,11 @@
 
 ## 文件与图片约定
 
-- 新文件优先放入对应的 `notes/<lab>/` 目录。
-- 共用的环境与排错内容放入 `docs/`，避免在多篇教程中重复维护。
-- 代码块语言标记应与内容匹配，例如 `bash`、`sql`、`http`、`html`、`text`。
+- 新文件优先放入对应的 notes/<lab>/ 目录。
+- 共用的环境与排错内容放入 docs/，避免在多篇教程中重复维护。
+- 代码块语言标记应与内容匹配，例如 bash、sql、http、html、text。
 - 图片应有说明文字；优先保留能解释关键行为的截图，避免重复截图。
-- 根目录笔记引用图片时使用 `./img/...`；位于 `notes/<lab>/` 的笔记应按目录深度调整相对路径，例如 `../../img/...`。
+- 根目录笔记引用图片时使用 ./img/...；位于 notes/<lab>/ 的笔记应使用 ../../img/...。
 - 在重命名或移动图片前，先搜索全部 Markdown 引用，并在迁移后运行检查脚本。
 - 新增图片前先压缩；当前仓库未启用 Git LFS，不要未经评估就切换存储策略。
 
@@ -40,13 +41,13 @@
 1. 在独立分支中修改，避免未经检查的内容直接进入主分支。
 2. 先创建靶场索引，再逐段拆分原始长笔记。
 3. 每次迁移后检查标题层级、代码块、相对链接、图片引用与 Docsify 路由。
-4. 更新 README、英文首页、`home.md`、`_sidebar.md` 和 `_navbar.md`。
-5. 运行 `python3 scripts/check_images.py --summary`；如环境允许，也运行 CI 中的图片检查和 Markdown 链接检查。
+4. 更新 README、英文首页、home.md、_sidebar.md 和 _navbar.md。
+5. 运行 python3 scripts/check_images.py --summary；如环境允许，也运行 CI 中的图片检查和 Markdown 链接检查。
 6. 人工打开站点与 GitHub 文件，确认关键链接和图片正常。
 
 ## 后续拆分
 
-SQLi-Labs 是当前篇幅最大的主笔记，现已拆分为独立章节；原始完整文件仍保留，方便比对。下一步可按相同原则拆分 Upload-Labs、XSS-Labs 和 Google XSS Game。任何后续迁移都应保留章节顺序，并在拆分后验证图片、锚点与导航。
+SQLi-Labs 与 Upload-Labs 已完成章节拆分，原始完整文件仍保留方便比对。下一步可按相同原则拆分 XSS-Labs 和 Google XSS Game。任何后续迁移都应保留章节顺序，并在拆分后验证图片、锚点与导航。
 
 ## 安全与隐私
 
