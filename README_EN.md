@@ -29,7 +29,7 @@ LabsTutorialNotes is a collection of practical notes for local security labs and
 
 | Lab | Main Topics | Approx. Lessons* | Index and Existing Notes |
 |---|---|:---:|---|
-| 💉 **SQLi-Labs** | SQL injection, blind injection, query context and filtering | 75 | [Lab index](./notes/sqli-labs/README.md) · [Existing full notes](./sqli-labs靶场通关笔记.md) |
+| 💉 **SQLi-Labs** | SQL injection, blind injection, query context and filtering | 65 | [Chapter index](./notes/sqli-labs/README.md) · [Existing full notes](./sqli-labs靶场通关笔记.md) |
 | ⚡ **XSS-Labs** | Output context, reflected XSS, encoding and filters | 20 | [Lab index](./notes/xss-labs/README.md) · [Existing full notes](./xss-labs靶场通关笔记.md) |
 | 📤 **Upload-Labs** | Upload validation, parser differences and race conditions | 21 | [Lab index](./notes/upload-labs/README.md) · [Existing full notes](./upload-labs靶场通关笔记.md) |
 | 🎯 **Google XSS Game** | Browser context and DOM behavior | 6 | [Lab index](./notes/google-xss-game/README.md) · [Existing full notes](./GoogleXSSGame靶场通关笔记.md) |
