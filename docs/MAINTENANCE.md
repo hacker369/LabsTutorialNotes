@@ -4,12 +4,14 @@
 
 ## 当前结构
 
-- 根目录的四篇 Markdown 文件仍保留为原始完整笔记，供对照和回溯。
+- 根目录的 Markdown 文件保留为原始完整笔记，供对照和回溯。
 - notes/<lab>/README.md 是各靶场的导航入口。
 - SQLi-Labs 已按环境与基础、Less-1–65 关卡范围及速查/防御拆分到 notes/sqli-labs/。
-- Upload-Labs 已拆分为环境基础、Pass-01–21 章节与通用方法论/防御，原始笔记继续保留作存档。
+- Upload-Labs 已拆分为环境基础、Pass-01–21 章节与通用方法论/防御。
+- XSS-Labs 已拆分为环境基础、Level 01–20 五关一组的章节与速查/防御。
+- Google XSS Game 原始笔记仍待按相同方式拆分。
 - docs/ 存放共用的环境指南、故障排查、笔记模板和术语表。
-- img/ 暂时保留既有截图路径；位于 notes/<lab>/ 的拆分笔记按目录深度使用 ../../img/ 指向仓库根目录图片。
+- img/ 暂时保留既有截图路径；位于 notes/<lab>/ 的拆分笔记使用 ../../img/ 指向仓库根目录图片。
 - scripts/check_images.py 与 GitHub Actions 用于检查图片引用和文件体积。
 
 ## 内容质量标准
@@ -47,7 +49,7 @@
 
 ## 后续拆分
 
-SQLi-Labs 与 Upload-Labs 已完成章节拆分，原始完整文件仍保留方便比对。下一步可按相同原则拆分 XSS-Labs 和 Google XSS Game。任何后续迁移都应保留章节顺序，并在拆分后验证图片、锚点与导航。
+SQLi-Labs、Upload-Labs 与 XSS-Labs 已完成章节拆分，原始完整文件仍保留方便比对。下一步可按相同原则拆分 Google XSS Game。任何后续迁移都应保留章节顺序，并在拆分后验证图片、锚点与导航。
 
 ## 安全与隐私
 
