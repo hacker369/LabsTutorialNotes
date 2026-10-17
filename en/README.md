@@ -1,47 +1,47 @@
 <div class="hero">
 
-<div class="hero-tag">WEB SECURITY LABS · WALKTHROUGH</div>
+<div class="hero-tag">WEB SECURITY LABS · WALKTHROUGHS</div>
 
 # LabsTutorialNotes
 
-<p class="hero-sub">Complete hands-on walkthroughs of classic web security labs — every challenge solved personally: environment setup, payload construction, failed attempts, and the final bypass. All in one place.</p>
+<p class="hero-sub">Structured, reproducible notes for web security labs: environment setup, request analysis, source-code review, troubleshooting, and remediation.</p>
 
-<p class="hero-stats">4 labs · 122 challenges cleared · 13,000+ lines · 700+ payloads · 1,000+ screenshots</p>
+<p class="hero-stats">4 labs · 112 documented lessons · source analysis · troubleshooting · remediation</p>
 
-<p class="hero-cta"><a class="cta-main" href="#/sqli-labs靶场通关笔记.md">Start Level 1 →</a> <a class="cta-ghost" href="https://github.com/hacker369/LabsTutorialNotes">GitHub Repo</a></p>
+<p class="hero-cta"><a class="cta-main" href="#/notes/sqli-labs/README.md">Start Learning →</a> <a class="cta-ghost" href="https://github.com/hacker369/LabsTutorialNotes">GitHub Repo</a></p>
 
 </div>
 
-<p class="lang-note">🌐 <strong>Note</strong>: the walkthrough content itself is written in Chinese (with plenty of screenshots). The site UI is bilingual — use the <strong>EN / 中文</strong> button in the top bar to switch.</p>
+<p class="lang-note">🌐 <strong>Note</strong>: the walkthrough content is primarily written in Chinese. Use the <strong>EN / 中文</strong> control in the top bar to switch the site interface.</p>
 
 <div class="card-grid">
 
-<a class="lab-card" href="#/sqli-labs靶场通关笔记.md">
+<a class="lab-card" href="#/notes/sqli-labs/README.md">
 <div class="lab-icon">💉</div>
-<div class="lab-name">sqli-labs</div>
-<div class="lab-desc">SQL injection from zero to advanced: error-based, UNION, boolean/time-based blind, stacked queries, charset tricks and filter bypass — all 75 challenges.</div>
-<span class="pill green">75 levels</span><span class="pill">9,200 lines</span><span class="pill">★★★☆☆</span>
+<div class="lab-name">SQLi-Labs</div>
+<div class="lab-desc">SQL injection fundamentals, query contexts, error and UNION techniques, blind injection, filtering behavior, and source-code analysis.</div>
+<span class="pill green">65 documented lessons</span><span class="pill">Chapter index</span>
 </a>
 
-<a class="lab-card" href="#/xss-labs靶场通关笔记.md">
+<a class="lab-card" href="#/notes/xss-labs/README.md">
 <div class="lab-icon">⚡</div>
-<div class="lab-name">xss-labs</div>
-<div class="lab-desc">Output-context thinking for XSS: reflected injection, event handlers, tag closing, encoding games and filter evasion — Level 1~20.</div>
-<span class="pill green">20 levels</span><span class="pill">820 lines</span><span class="pill">★★☆☆☆</span>
+<div class="lab-name">XSS-Labs</div>
+<div class="lab-desc">Reflected XSS, HTML and JavaScript contexts, event attributes, encoding, filtering, and browser behavior.</div>
+<span class="pill green">20 documented levels</span><span class="pill">Chapter index</span>
 </a>
 
-<a class="lab-card" href="#/upload-labs靶场通关笔记.md">
+<a class="lab-card" href="#/notes/upload-labs/README.md">
 <div class="lab-icon">📤</div>
-<div class="lab-name">upload-labs</div>
-<div class="lab-desc">File upload attack surface: client-side checks, MIME validation, null-byte truncation, parser vulnerabilities, .htaccess and race conditions — Pass 1~21.</div>
-<span class="pill green">21 levels</span><span class="pill">2,800 lines</span><span class="pill">★★★☆☆</span>
+<div class="lab-name">Upload-Labs</div>
+<div class="lab-desc">File-upload validation, MIME and filename handling, server parsing behavior, race conditions, and defensive storage practices.</div>
+<span class="pill green">21 documented passes</span><span class="pill">Chapter index</span>
 </a>
 
-<a class="lab-card" href="#/GoogleXSSGame靶场通关笔记.md">
+<a class="lab-card" href="#/notes/google-xss-game/README.md">
 <div class="lab-icon">🎯</div>
 <div class="lab-name">Google XSS Game</div>
-<div class="lab-desc">Google's official XSS challenge: context construction, DOM lazy evaluation and hint usage in a real browser environment — all 6 levels.</div>
-<span class="pill green">6 levels</span><span class="pill">420 lines</span><span class="pill">★★★☆☆</span>
+<div class="lab-desc">Browser contexts, DOM behavior, URL and attribute handling, and client-side input processing.</div>
+<span class="pill green">6 documented levels</span><span class="pill">Chapter index</span>
 </a>
 
 </div>
@@ -52,37 +52,36 @@
 
 <div class="step-card">
 <span class="step-num">STEP 01</span>
-<h4>Read online</h4>
-<p>Zero setup: this site <a href="#/sqli-labs靶场通关笔记.md">is the full notes</a>, with full-text search and click-to-zoom screenshots.</p>
+<h4>Prepare an isolated lab</h4>
+<p>Check the lab source and versions of the operating system, PHP, database, and web server. Avoid exposing intentionally vulnerable services to the public internet.</p>
 </div>
 
 <div class="step-card">
 <span class="step-num">STEP 02</span>
-<h4>Set up the lab</h4>
-<p>Windows: phpStudy / XAMPP. To avoid PHP version pitfalls use Docker — ready-made commands in each walkthrough's install chapter.</p>
+<h4>Reproduce and observe</h4>
+<p>Record the request, response, visible behavior, and error messages. Separate observations from assumptions.</p>
 </div>
 
 <div class="step-card">
 <span class="step-num">STEP 03</span>
-<h4>Solve &amp; review</h4>
-<p>Try each challenge yourself first, then compare with the notes. Cheat sheets live in the last chapter of every walkthrough.</p>
+<h4>Analyze and remediate</h4>
+<p>Trace the input through the source code, explain the root cause, and document a fix with a verification method.</p>
 </div>
 
 </div>
 
-## <span class="mono-h">// Recommended Path</span>
+## <span class="mono-h">// Learning Resources</span>
 
-1. **sqli-labs** — build injection instinct and UNION-query intuition
-2. **xss-labs** — understand output contexts and encoding bypass
-3. **upload-labs** — master validation gaps and parser quirks
-4. **Google XSS Game** — consolidate browser-side XSS
-5. Level up to real-world CVEs: [VulhubTutorialNotes](https://hacker369.github.io/VulhubTutorialNotes.github.io/)
+- [Setup guide](#/docs/setup.md) · [Troubleshooting](#/docs/troubleshooting.md)
+- [Lab note template](#/docs/lab-note-template.md) · [Web security glossary](#/docs/glossary.md)
+- [Maintenance guide](#/docs/MAINTENANCE.md)
+- Related project: [VulhubTutorialNotes](https://hacker369.github.io/VulhubTutorialNotes.github.io/)
 
 <div class="disclaimer">
 
 <p><strong>⚠️ Disclaimer</strong></p>
 
-<p>These notes are for learning in <strong>local or properly authorized</strong> teaching labs only. Every technique targets intentionally vulnerable practice environments. Do <strong>not</strong> test or attack real systems without authorization. The author accepts no liability for misuse.</p>
+<p>Use these notes only with local or explicitly authorized training labs, CTFs, and security research. Do not test real systems without authorization. Run intentionally vulnerable legacy applications in isolated virtual machines or containers.</p>
 
 </div>
 

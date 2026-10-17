@@ -1,5 +1,8 @@
 # upload-labs 靶场通关笔记
 
+> **章节导航已更新**：为方便阅读，本文已拆分到 [Upload-Labs 学习索引](notes/upload-labs/README.md)，包括 [环境与基础](notes/upload-labs/00-overview.md)、[Pass-01–05](notes/upload-labs/01-pass-01-05.md)、[Pass-06–10](notes/upload-labs/02-pass-06-10.md)、[Pass-11–15](notes/upload-labs/03-pass-11-15.md)、[Pass-16–21](notes/upload-labs/04-pass-16-21.md) 和 [通用方法论与防御](notes/upload-labs/05-methodology-defense.md)。本文件保留为原始长篇存档。
+
+
 > **说明**：本文面向**授权安全学习 / CTF 练习**。upload-labs 是故意存在漏洞的教学靶场，仅可在本地或授权环境中使用。请勿将相关技术用于未授权系统。
 
 ***

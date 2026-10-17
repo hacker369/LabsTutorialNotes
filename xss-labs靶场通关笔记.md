@@ -1,5 +1,8 @@
 # xss-labs 靶场通关笔记
 
+> **章节导航已更新**：本文已拆分到 [XSS-Labs 学习索引](notes/xss-labs/README.md)，包括 [环境与基础](notes/xss-labs/00-overview.md)、[Level 01–05](notes/xss-labs/01-level-01-05.md)、[Level 06–10](notes/xss-labs/02-level-06-10.md)、[Level 11–15](notes/xss-labs/03-level-11-15.md)、[Level 16–20](notes/xss-labs/04-level-16-20.md) 和 [速查与防御](notes/xss-labs/05-reference-defense.md)。本文件保留为原始长篇存档。
+
+
 > **适用范围**：仅限本地 / 授权靶场练习。xss-labs 是故意存在漏洞的教学平台，请勿对未授权系统使用文中手法。\
 > **项目地址**：<https://github.com/do0dl3/xss-labs>
 >
