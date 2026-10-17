@@ -34,7 +34,7 @@ LabsTutorialNotes 是一份面向本地安全学习和授权教学环境的 Web 
 
 | 靶场 | 主要主题 | 关卡规模* | 学习入口 |
 |---|---|:---:|---|
-| 💉 **SQLi-Labs** | SQL 注入、盲注、过滤逻辑与查询上下文 | 75 | [打开索引](./notes/sqli-labs/README.md) · [原始完整笔记](./sqli-labs靶场通关笔记.md) |
+| 💉 **SQLi-Labs** | SQL 注入、盲注、过滤逻辑与查询上下文 | 65 | [分章阅读](./notes/sqli-labs/README.md) · [原始完整笔记](./sqli-labs靶场通关笔记.md) |
 | ⚡ **XSS-Labs** | 输出上下文、反射型 XSS、编码与过滤 | 20 | [打开索引](./notes/xss-labs/README.md) · [原始完整笔记](./xss-labs靶场通关笔记.md) |
 | 📤 **Upload-Labs** | 文件上传校验、解析差异与竞态条件 | 21 | [打开索引](./notes/upload-labs/README.md) · [原始完整笔记](./upload-labs靶场通关笔记.md) |
 | 🎯 **Google XSS Game** | 浏览器上下文与 DOM 行为 | 6 | [打开索引](./notes/google-xss-game/README.md) · [原始完整笔记](./GoogleXSSGame靶场通关笔记.md) |
@@ -73,8 +73,12 @@ LabsTutorialNotes/
 ├── index.html                 # Docsify 入口与主题
 ├── home.md                    # 在线站点首页
 ├── _sidebar.md / _navbar.md   # 站点导航
-├── notes/                     # 新的靶场索引入口
+├── notes/                     # 靶场索引与拆分章节
 │   ├── sqli-labs/
+│   │   ├── README.md
+│   │   ├── 00-overview.md
+│   │   ├── 01-less-01-10.md … 06-less-51-65.md
+│   │   └── 07-reference-defense.md
 │   ├── xss-labs/
 │   ├── upload-labs/
 │   └── google-xss-game/
