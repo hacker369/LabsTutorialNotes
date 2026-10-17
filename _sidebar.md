@@ -25,6 +25,11 @@
     * [Pass-16–21](notes/upload-labs/04-pass-16-21.md)
     * [通用方法论与防御](notes/upload-labs/05-methodology-defense.md)
   * [🎯 Google XSS Game 索引](notes/google-xss-game/README.md)
+    * [概述与安全](notes/google-xss-game/00-overview.md)
+    * [Level 1–2](notes/google-xss-game/01-level-01-02.md)
+    * [Level 3–4](notes/google-xss-game/02-level-03-04.md)
+    * [Level 5–6](notes/google-xss-game/03-level-05-06.md)
+    * [总结与防御](notes/google-xss-game/04-summary-defense.md)
 
 * **📚 学习工具**
   * [🧰 环境搭建](docs/setup.md)
