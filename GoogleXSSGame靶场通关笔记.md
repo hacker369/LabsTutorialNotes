@@ -1,5 +1,8 @@
 # Google XSS Game 靶场通关笔记
 
+> **章节导航已更新**：本文已拆分到 [Google XSS Game 学习索引](notes/google-xss-game/README.md)，包括 [概述与安全](notes/google-xss-game/00-overview.md)、[Level 1–2](notes/google-xss-game/01-level-01-02.md)、[Level 3–4](notes/google-xss-game/02-level-03-04.md)、[Level 5–6](notes/google-xss-game/03-level-05-06.md) 和 [总结与防御](notes/google-xss-game/04-summary-defense.md)。本文件保留为原始长篇存档。
+
+
 ## 安全与法律提示
 
 Google XSS Game 是 Google 官方提供的**授权教学靶场**。本文所有 Payload 仅可用于该靶场，以及你拥有**明确书面授权**的测试系统。未经授权对真实网站进行 XSS 测试属于违法行为，可能承担刑事责任。请务必遵守《网络安全法》等相关法律法规。
