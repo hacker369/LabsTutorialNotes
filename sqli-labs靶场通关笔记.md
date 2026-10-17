@@ -1,5 +1,7 @@
 # sqli-labs 靶场通关笔记
 
+> **分章阅读（新结构）**：本文件保留为原始完整笔记，便于对照与回溯。建议从 [SQLi-Labs 分章索引](notes/sqli-labs/README.md) 阅读拆分后的章节： [环境与基础](notes/sqli-labs/00-overview.md) · [Less-1–10](notes/sqli-labs/01-less-01-10.md) · [Less-11–20](notes/sqli-labs/02-less-11-20.md) · [Less-21–30](notes/sqli-labs/03-less-21-30.md) · [Less-31–40](notes/sqli-labs/04-less-31-40.md) · [Less-41–50](notes/sqli-labs/05-less-41-50.md) · [Less-51–65](notes/sqli-labs/06-less-51-65.md) · [速查与防御](notes/sqli-labs/07-reference-defense.md)。
+
 > **适用范围**：仅限本地 / 授权靶场练习。sqli-labs 是故意存在 SQL 注入漏洞的教学平台，请勿对未授权系统使用文中手法。\
 > **项目地址**：<https://github.com/Audi-1/sqli-labs>
 >
