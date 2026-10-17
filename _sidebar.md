@@ -12,6 +12,12 @@
     * [速查与防御](notes/sqli-labs/07-reference-defense.md)
   * [⚡ XSS-Labs 索引](notes/xss-labs/README.md)
   * [📤 Upload-Labs 索引](notes/upload-labs/README.md)
+    * [环境与基础](notes/upload-labs/00-overview.md)
+    * [Pass-01–05](notes/upload-labs/01-pass-01-05.md)
+    * [Pass-06–10](notes/upload-labs/02-pass-06-10.md)
+    * [Pass-11–15](notes/upload-labs/03-pass-11-15.md)
+    * [Pass-16–21](notes/upload-labs/04-pass-16-21.md)
+    * [通用方法论与防御](notes/upload-labs/05-methodology-defense.md)
   * [🎯 Google XSS Game 索引](notes/google-xss-game/README.md)
 
 * **📚 学习工具**
