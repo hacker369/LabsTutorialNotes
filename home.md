@@ -18,7 +18,7 @@
 <div class="lab-icon">💉</div>
 <div class="lab-name">sqli-labs</div>
 <div class="lab-desc">SQL 注入基础与进阶：查询上下文、报错与联合查询、盲注、过滤逻辑及版本差异。</div>
-<span class="pill green">75 关标注</span><span class="pill">源码分析</span><span class="pill">排错记录</span>
+<span class="pill green">65 关标注</span><span class="pill">源码分析</span><span class="pill">排错记录</span>
 </a>
 
 <a class="lab-card" href="#/notes/xss-labs/README.md">
