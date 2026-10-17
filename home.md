@@ -6,7 +6,7 @@
 
 <p class="hero-sub">从环境搭建、请求分析，到漏洞原理、复现排错与安全修复。记录的不只是测试输入，更是每一步背后的原因。</p>
 
-<p class="hero-stats">4 大靶场 · 122 个标注关卡 · 源码分析 · 环境排错 · 安全修复</p>
+<p class="hero-stats">4 大靶场 · 112 个标注关卡 · 源码分析 · 环境排错 · 安全修复</p>
 
 <p class="hero-cta"><a class="cta-main" href="#/notes/sqli-labs/README.md">开始学习 →</a> <a class="cta-ghost" href="https://github.com/hacker369/LabsTutorialNotes">GitHub 源码</a></p>
 
@@ -44,7 +44,7 @@
 
 </div>
 
-## <span class="mono-h">// 推荐学习路线</span>
+## // 推荐学习路线
 
 <div class="quick-grid">
 
@@ -68,7 +68,7 @@
 
 </div>
 
-## <span class="mono-h">// 工具箱</span>
+## // 工具箱
 
 - [环境搭建指南](#/docs/setup.md) · [故障排查](#/docs/troubleshooting.md)
 - [实验笔记模板](#/docs/lab-note-template.md) · [Web 安全术语表](#/docs/glossary.md)
