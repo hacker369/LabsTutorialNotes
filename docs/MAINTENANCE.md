@@ -9,7 +9,7 @@
 - SQLi-Labs 已按环境与基础、Less-1–65 关卡范围及速查/防御拆分到 notes/sqli-labs/。
 - Upload-Labs 已拆分为环境基础、Pass-01–21 章节与通用方法论/防御。
 - XSS-Labs 已拆分为环境基础、Level 01–20 五关一组的章节与速查/防御。
-- Google XSS Game 原始笔记仍待按相同方式拆分。
+- Google XSS Game 已拆分为概述、Level 1–6 分组和总结/防御。
 - docs/ 存放共用的环境指南、故障排查、笔记模板和术语表。
 - img/ 暂时保留既有截图路径；位于 notes/<lab>/ 的拆分笔记使用 ../../img/ 指向仓库根目录图片。
 - scripts/check_images.py 与 GitHub Actions 用于检查图片引用和文件体积。
@@ -47,9 +47,9 @@
 5. 运行 python3 scripts/check_images.py --summary；如环境允许，也运行 CI 中的图片检查和 Markdown 链接检查。
 6. 人工打开站点与 GitHub 文件，确认关键链接和图片正常。
 
-## 后续拆分
+## 后续维护
 
-SQLi-Labs、Upload-Labs 与 XSS-Labs 已完成章节拆分，原始完整文件仍保留方便比对。下一步可按相同原则拆分 Google XSS Game。任何后续迁移都应保留章节顺序，并在拆分后验证图片、锚点与导航。
+SQLi-Labs、Upload-Labs、XSS-Labs 和 Google XSS Game 已完成章节拆分，原始完整文件仍保留方便比对。后续可继续改进内容一致性、可读性和自动化校验。任何内容迁移都应保留章节顺序，并在拆分后验证图片、锚点与导航。
 
 ## 安全与隐私
 
